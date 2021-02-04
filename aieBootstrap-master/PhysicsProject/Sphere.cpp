@@ -1,7 +1,7 @@
 #include "Sphere.h"
 #include <Gizmos.h>
 
-Sphere::Sphere(glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a_radius, glm::vec4 a_color) : Rigidbody(SPHERE, a_position, a_velocity, 0, a_mass)
+Sphere::Sphere(glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a_radius, glm::vec4 a_color) : Rigidbody(SPHERE, a_position, a_velocity, a_mass, 0)
 {
 
 	m_radius = a_radius;
