@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "glm\ext.hpp"
 #include "Sphere.h"
+#include "Plane.h"
 #include <Gizmos.h>
 
 
@@ -27,13 +28,24 @@ bool PhysicsProjectApp::startup() {
 
 	m_physicsScene = new PhysicsScene();
 
-	m_physicsScene->SetGravity(glm::vec2(0, 0));
+	m_physicsScene->SetGravity(glm::vec2(0, -10));
 
 	m_physicsScene->SetTimeStep(0.01);
 
-	Sphere* ball;
-	ball = new Sphere(glm::vec2(-40, 0), glm::vec2(10, 30), 3.f, 1, glm::vec4(1, 0, 0, 1));
-	m_physicsScene->AddActor(ball);
+	Sphere* ball1;
+	ball1 = new Sphere(glm::vec2(-40, 40), glm::vec2(0, 0), 3.f, 3, glm::vec4(1, 0, 0, 1));
+	
+	Sphere* ball2;
+	ball2 = new Sphere(glm::vec2(40, 40), glm::vec2(0, 0), 3.f, 3, glm::vec4(0, 1, 0, 1));
+	
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+
+	ball1->ApplyForce(glm::vec2(100, 0));
+	ball2->ApplyForce(glm::vec2(-20, 0));
+
+	Plane* plane = new Plane();
+	m_physicsScene->AddActor(plane);
 
 	return true;
 }
@@ -53,7 +65,7 @@ void PhysicsProjectApp::update(float deltaTime) {
 
 
 	m_physicsScene->Update(deltaTime);
-	m_physicsScene->MakeGizmo();
+	m_physicsScene->Draw();
 
 
 	// exit the application
