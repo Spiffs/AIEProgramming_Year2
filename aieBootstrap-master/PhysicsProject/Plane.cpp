@@ -3,14 +3,14 @@
 
 Plane::Plane(glm::vec2 a_normal, float a_distance) : PhysicsObject(PLANE)
 {
-	m_normal = a_normal;
+	m_normal = glm::normalize(a_normal);
 	m_distanceToOrigin = a_distance;
 	m_color = glm::vec4(0, 1, 0, 1);
 }
 
 Plane::Plane() : PhysicsObject(PLANE)
 {
-	m_normal = glm::vec2(0, 1);
+	m_normal = glm::normalize(glm::vec2(0, 1));
 	m_distanceToOrigin = 0;
 	m_color = glm::vec4(1, 1, 1, 1);
 }
