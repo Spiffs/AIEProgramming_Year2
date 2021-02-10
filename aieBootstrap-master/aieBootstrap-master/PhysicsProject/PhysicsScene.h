@@ -13,10 +13,12 @@ public:
 	void AddActor(PhysicsObject* a_actor);
 	void RemoveActor(PhysicsObject* a_actor);
 
-	// this will call the update of each physicsobject and updates internally. This will handle collision detection and resolution
+	// This will call the update of each PhysicsObject and updates internally.
+	// This will handle collision detection and resolution
 	void Update(float dt);
 
-	// called once per frame
+	// Called once per frame and handles the rendering of PhysicsObject.
+	// Will add to a loop of Gizmo objects to render.
 	void Draw();
 	void DebugScene();
 
@@ -25,7 +27,7 @@ public:
 
 	void SetTimeStep(const float a_timeStep) { m_timeStep = a_timeStep; }
 	float GetTimeStep() const { return m_timeStep; }
-
+	
 	void CheckForCollision();
 
 	static bool Plane2Plane(PhysicsObject*, PhysicsObject*);
@@ -40,11 +42,11 @@ public:
 	static bool Box2Sphere(PhysicsObject*, PhysicsObject*);
 	static bool Box2Box(PhysicsObject*, PhysicsObject*);
 
-
 protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;
 
 	std::vector<PhysicsObject*> m_actors;
+
 };
 
