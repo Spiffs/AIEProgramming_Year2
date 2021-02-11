@@ -20,7 +20,7 @@ PhysicsProjectApp::~PhysicsProjectApp()
 }
 
 bool PhysicsProjectApp::startup() {
-	
+
 	// Increases 2D line coun to maximise the number of objects we can draw.
 	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
 
@@ -39,9 +39,10 @@ bool PhysicsProjectApp::startup() {
 	// If it is too high it causes the sim to stutter and reduce stability.
 	m_physicsScene->SetTimeStep(0.01f);
 
-	/*DrawRect();*/
-	/*SphereAndPlane();*/
-	SpringTest(10);
+	//DrawRect();
+	//SphereAndPlane();
+	//SpringTest(10);
+	TriggerTest();
 
 	return true;
 }
@@ -93,7 +94,7 @@ void PhysicsProjectApp::draw() {
 	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.0f, 1.0f));
 
 	// draw your stuff here!
-	
+
 	char fps[32];
 	sprintf_s(fps, 32, "FPS %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
@@ -187,4 +188,24 @@ void PhysicsProjectApp::SpringTest(int a_amount)
 	Box* box = new Box(glm::vec2(0, -20), glm::vec2(0), 0.3f, 20, 8, 2);
 	box->SetKinematic(true);
 	m_physicsScene->AddActor(box);
+}
+
+void PhysicsProjectApp::TriggerTest()
+{
+	Sphere* ball1 = new Sphere(glm::vec2(10, 20), glm::vec2(0), 4, 4, glm::vec4(1, 0, 0, 1));
+	Sphere* ball2 = new Sphere(glm::vec2(10, -20), glm::vec2(0), 4, 4, glm::vec4(0, 0.5f, 0.5f, 1));
+
+	ball2->SetKinematic(true);
+	ball2->SetTrigger(true);
+
+	m_physicsScene->AddActor(ball1);
+	m_physicsScene->AddActor(ball2);
+	m_physicsScene->AddActor(new Plane(glm::vec2(0, 1), -30));
+	m_physicsScene->AddActor(new Plane(glm::vec2(1, 0), -50));
+	m_physicsScene->AddActor(new Plane(glm::vec2(-1, 0), -50));
+	m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(3, 0), 0.5, 4, 8, 4));
+	m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(3, 0), 0.5, 4, 8, 4));
+
+	ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
+	ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
 }
