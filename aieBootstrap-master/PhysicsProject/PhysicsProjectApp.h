@@ -4,6 +4,7 @@
 #include "Renderer2D.h"
 
 #include "PhysicsScene.h"
+#include "Billiards.h"
 
 class PhysicsProjectApp : public aie::Application {
 public:
@@ -30,6 +31,7 @@ protected:
 	aie::Font*			m_font;
 
 	PhysicsScene* m_physicsScene;
+	Billiards* m_billiards;
 
 	const float m_aspectRatio = 16.f / 9.f;
 	const float m_extents = 100;

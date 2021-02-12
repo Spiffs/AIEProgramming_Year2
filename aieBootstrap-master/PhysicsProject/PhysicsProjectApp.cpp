@@ -31,18 +31,20 @@ bool PhysicsProjectApp::startup() {
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
+	m_billiards = new Billiards();
 
 	m_physicsScene->SetGravity(glm::vec2(0, -10));
 
 	// Lower the valu, the more accurate the simulation will be;
 	// but it will increase the processing time required.
 	// If it is too high it causes the sim to stutter and reduce stability.
-	m_physicsScene->SetTimeStep(0.01f);
+	m_billiards->SetTimeStep(0.01f);
 
 	//DrawRect();
 	//SphereAndPlane();
 	//SpringTest(10);
-	TriggerTest();
+	//TriggerTest();
+	m_billiards->StartUp();
 
 	return true;
 }
@@ -53,8 +55,8 @@ void PhysicsProjectApp::shutdown() {
 	delete m_2dRenderer;
 }
 
-void PhysicsProjectApp::update(float deltaTime) {
-
+void PhysicsProjectApp::update(float deltaTime)
+{
 	// input example
 	aie::Input* input = aie::Input::getInstance();
 
@@ -63,12 +65,17 @@ void PhysicsProjectApp::update(float deltaTime) {
 	m_physicsScene->Update(deltaTime);
 	m_physicsScene->Draw();
 
+	m_billiards->Update(deltaTime);
+	// draw billiards
+	m_billiards->Draw();
+
 	if (input->isMouseButtonDown(0))
 	{
 		int xScreen, yScreen;
 		input->getMouseXY(&xScreen, &yScreen);
 		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
 		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3f));
+		std::cout << worldPos.x << ", " << worldPos.y << std::endl;
 	}
 
 
@@ -83,10 +90,6 @@ void PhysicsProjectApp::draw() {
 	// wipe the screen to the background colour
 	clearScreen();
 
-
-
-
-
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
@@ -94,6 +97,8 @@ void PhysicsProjectApp::draw() {
 	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.0f, 1.0f));
 
 	// draw your stuff here!
+
+
 
 	char fps[32];
 	sprintf_s(fps, 32, "FPS %i", getFPS());
@@ -109,7 +114,6 @@ void PhysicsProjectApp::draw() {
 glm::vec2 PhysicsProjectApp::ScreenToWorld(glm::vec2 a_screenPos)
 {
 	glm::vec2 worldPos = a_screenPos;
-
 
 	// we will move the center of the screen to (0, 0)
 	worldPos.x -= getWindowWidth() / 2;
