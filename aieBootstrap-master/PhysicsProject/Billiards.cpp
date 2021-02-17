@@ -6,28 +6,28 @@ void Billiards::StartUp()
 #pragma region POINTER DEFINITIONS (BALLS)
 
 	// player ball
-	m_ballPlayer = new Sphere(glm::vec2(0, 0), glm::vec2(50, 0), 1, m_radius, WHITE);
+	m_ballPlayer = new Sphere(glm::vec2(0, 0), glm::vec2(20, 0), 100, m_radius, WHITE);
 
 	// solid balls
-	m_ball1(new Sphere(glm::vec2(30, 0), glm::vec2(0), 1, m_radius, BLUE), 1);
-	m_ball2 = new Sphere(glm::vec2(35, -3), glm::vec2(0), 1, m_radius, RED);
-	m_ball3 = new Sphere(glm::vec2(40, -6), glm::vec2(0), 1, m_radius, YELLOW);
-	m_ball4 = new Sphere(glm::vec2(45, 3), glm::vec2(0), 1, m_radius, GREEN);
-	m_ball5 = new Sphere(glm::vec2(45, -9), glm::vec2(0), 1, m_radius, PURPLE);
-	m_ball6 = new Sphere(glm::vec2(50, 6), glm::vec2(0), 1, m_radius, BROWN);
-	m_ball7 = new Sphere(glm::vec2(50, -6), glm::vec2(0), 1, m_radius, ORANGE);
+	m_ball1 = new Sphere(glm::vec2(30, 0), glm::vec2(0), 100, m_radius, BLUE);
+	m_ball2 = new Sphere(glm::vec2(35, -3), glm::vec2(0), 100, m_radius, RED);
+	m_ball3 = new Sphere(glm::vec2(40, -6), glm::vec2(0), 100, m_radius, YELLOW);
+	m_ball4 = new Sphere(glm::vec2(45, 3), glm::vec2(0), 100, m_radius, GREEN);
+	m_ball5 = new Sphere(glm::vec2(45, -9), glm::vec2(0), 100, m_radius, PURPLE);
+	m_ball6 = new Sphere(glm::vec2(50, 6), glm::vec2(0), 100, m_radius, BROWN);
+	m_ball7 = new Sphere(glm::vec2(50, -6), glm::vec2(0), 100, m_radius, ORANGE);
 
 	// 8 ball
-	m_ball8 = new Sphere(glm::vec2(40, 0), glm::vec2(0), 1, m_radius, BLACK); \
+	m_ball8 = new Sphere(glm::vec2(40, 0), glm::vec2(0), 100, m_radius, BLACK);
 
-		// stripped balls
-		m_ball9 = new Sphere(glm::vec2(35, 3), glm::vec2(0), 1, m_radius, ORANGE);
-	m_ball10 = new Sphere(glm::vec2(40, 6), glm::vec2(0), 1, m_radius, BROWN);
-	m_ball11 = new Sphere(glm::vec2(45, 9), glm::vec2(0), 1, m_radius, PURPLE);
-	m_ball12 = new Sphere(glm::vec2(45, -3), glm::vec2(0), 1, m_radius, GREEN);
-	m_ball13 = new Sphere(glm::vec2(50, 12), glm::vec2(0), 1, m_radius, YELLOW);
-	m_ball14 = new Sphere(glm::vec2(50, 0), glm::vec2(0), 1, m_radius, RED);
-	m_ball15 = new Sphere(glm::vec2(50, -12), glm::vec2(0), 1, m_radius, BLUE);
+	// stripped balls
+	m_ball9 = new Sphere(glm::vec2(35, 3), glm::vec2(0), 100, m_radius, ORANGE);
+	m_ball10 = new Sphere(glm::vec2(40, 6), glm::vec2(0), 100, m_radius, BROWN);
+	m_ball11 = new Sphere(glm::vec2(45, 9), glm::vec2(0), 100, m_radius, PURPLE);
+	m_ball12 = new Sphere(glm::vec2(45, -3), glm::vec2(0), 100, m_radius, GREEN);
+	m_ball13 = new Sphere(glm::vec2(50, 12), glm::vec2(0), 100, m_radius, YELLOW);
+	m_ball14 = new Sphere(glm::vec2(50, 0), glm::vec2(0), 100, m_radius, RED);
+	m_ball15 = new Sphere(glm::vec2(50, -12), glm::vec2(0), 100, m_radius, BLUE);
 
 	// pushing to list to draw
 	AddActor(m_ballPlayer);
@@ -55,7 +55,7 @@ void Billiards::StartUp()
 
 void Billiards::Update(float deltaTime)
 {
-	m_ballPlayer->ApplyForce(glm::vec2(1, 0), glm::vec2(0));
+	//m_ballPlayer->ApplyForce(glm::vec2(1, 0), glm::vec2(0));
 
 	for (auto ball : m_actors)
 	{
