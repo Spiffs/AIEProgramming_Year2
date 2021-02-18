@@ -17,7 +17,7 @@ public:
 
 	// This will call the update of each PhysicsObject and updates internally.
 	// This will handle collision detection and resolution
-	void Update(float dt);
+	virtual void Update(float dt);
 
 	// Called once per frame and handles the rendering of PhysicsObject.
 	// Will add to a loop of Gizmo objects to render.
@@ -45,11 +45,10 @@ public:
 	static bool Box2Sphere(PhysicsObject*, PhysicsObject*);
 	static bool Box2Box(PhysicsObject*, PhysicsObject*);
 
+	std::vector<PhysicsObject*> m_actors;
 protected:
 	glm::vec2 m_gravity;
 	float m_timeStep;
-
-	std::vector<PhysicsObject*> m_actors;
 
 };
 

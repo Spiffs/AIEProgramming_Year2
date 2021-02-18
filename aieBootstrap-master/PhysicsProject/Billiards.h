@@ -9,7 +9,7 @@
 static glm::vec4 BLUE(0, 0, 1, 1);
 static glm::vec4 RED(1, 0, 0, 1);
 static glm::vec4 YELLOW(1, 1, 0, 1);
-static glm::vec4 GREEN(0, 1, 0, 1);
+static glm::vec4 GREEN(0, .6f, 0, 1);
 static glm::vec4 PURPLE(0.5f, 0, 1, 1);
 static glm::vec4 BROWN(0.5f, 0.3f, 0, 1);
 static glm::vec4 ORANGE(1, 0.5f, 0, 1);
@@ -23,14 +23,18 @@ public:
 	~Billiards() {}
 
 	void StartUp();
-	void Update(float deltaTime);
+	void UpdateLocal(float deltaTime);
 	void Draw();
 
 protected:
-	float m_radius = 2.f;
-
+	float m_radius = 2.5f;
+	 
 	// play area
-	Box* m_backdrop = new Box(glm::vec2(0), glm::vec2(0), 0, 1, 1300, 800, glm::vec4(1, 1, 0, 1));
+	Box* m_backdrop = new Box(glm::vec2(0), glm::vec2(0), 0, 1000, 110, 60, GREEN);
+	Box* m_topBorder = new Box(glm::vec2(0, 50.5f), glm::vec2(0), 0, 1000, 100, 6, glm::vec4(.4f, .2f, 0, 1));
+	Box* m_bottomBorder = new Box(glm::vec2(0, -54), glm::vec2(0), 0, 1000, 100, 3, glm::vec4(.4f, .2f, 0, 1));
+	Box* m_rightBorder = new Box(glm::vec2(98, 0), glm::vec2(0), 0, 1000, 3, 55, glm::vec4(.4f, .2f, 0, 1));
+	Box* m_leftBorder = new Box(glm::vec2(-98, 0), glm::vec2(0), 0, 1000, 3, 55, glm::vec4(.4f, .2f, 0, 1));
 
 	// white ball (player)
 	Sphere* m_ballPlayer;

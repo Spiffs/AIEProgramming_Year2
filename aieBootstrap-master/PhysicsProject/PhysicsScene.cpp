@@ -125,7 +125,7 @@ void PhysicsScene::ApplyContactForces(Rigidbody* a_actor1, Rigidbody* a_actor2, 
 	float body1Factor = body2Mass / (a_actor1->GetMass() + body2Mass);
 
 	a_actor1->SetPosition(a_actor1->GetPosition() - body1Factor * a_collisionNorm * a_pen);
-	
+
 	if (a_actor2)
 	{
 		a_actor2->SetPosition(a_actor2->GetPosition() + (1 - body1Factor) * a_collisionNorm * a_pen);
@@ -142,7 +142,7 @@ bool PhysicsScene::Plane2Sphere(PhysicsObject* objPlane, PhysicsObject* objSpher
 	return Sphere2Plane(objSphere, objPlane);
 }
 
-bool PhysicsScene::Plane2Box(PhysicsObject* objPlane , PhysicsObject* objBox)
+bool PhysicsScene::Plane2Box(PhysicsObject* objPlane, PhysicsObject* objBox)
 {
 	Plane* plane = dynamic_cast<Plane*>(objPlane);
 	Box* box = dynamic_cast<Box*>(objBox);
@@ -184,7 +184,7 @@ bool PhysicsScene::Plane2Box(PhysicsObject* objPlane , PhysicsObject* objBox)
 		}
 
 		// If we hit will normally result as one or two corners touching a plane...
-		if (numContacts > 0) 
+		if (numContacts > 0)
 		{
 			plane->ResolveCollision(box, contact / (float)numContacts);
 			return true;
@@ -237,46 +237,39 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 	return false;
 }
 
+
+
 bool PhysicsScene::Sphere2Box(PhysicsObject* objSphere, PhysicsObject* objBox)
 {
-	Sphere* sphere = dynamic_cast<Sphere*>(objSphere);
 	Box* box = dynamic_cast<Box*>(objBox);
-
+	Sphere* sphere = dynamic_cast<Sphere*>(objSphere);
 	if (box != nullptr && sphere != nullptr)
 	{
-		// Transform the circle into the box's coordinate space
+		// transform the circle into the box's coordinate space
 		glm::vec2 circlePosWorld = sphere->GetPosition() - box->GetPosition();
 		glm::vec2 circlePosBox = glm::vec2(glm::dot(circlePosWorld, box->GetLocalX()),
 			glm::dot(circlePosWorld, box->GetLocalY()));
 
-		// Find the closest point to the circle's center on the box
-		// by clamping the coordinates in the box-space to the box's extents
-		glm::vec2 closestPointOnBox = circlePosBox;
+		// find the closest point to the circle centre on the box by clamping the coordinates in box-space to the box's extents
+		glm::vec2 closestPointOnBoxBox = circlePosBox;
 		glm::vec2 extents = box->GetExtents();
 
-		if (closestPointOnBox.x < -extents.x)
-		{
-			closestPointOnBox.x = -extents.x;
-		}
+		if (closestPointOnBoxBox.x < -extents.x)
+			closestPointOnBoxBox.x = -extents.x;
 
-		if (closestPointOnBox.x > extents.x)
-		{
-			closestPointOnBox.x = extents.x;
-		}
+		if (closestPointOnBoxBox.x > extents.x)
+			closestPointOnBoxBox.x = extents.x;
 
-		if (closestPointOnBox.y < -extents.y)
-		{
-			closestPointOnBox.y = -extents.y;
-		}
+		if (closestPointOnBoxBox.y < -extents.y)
+			closestPointOnBoxBox.y = -extents.y;
 
-		if (closestPointOnBox.y > extents.y)
-		{
-			closestPointOnBox.y = extents.y;
-		}
+		if (closestPointOnBoxBox.y > extents.y)
+			closestPointOnBoxBox.y = extents.y;
 
-		// Now convert it back into world coordinates
-		glm::vec2 closestPointOnBoxWorld = box->GetPosition() + closestPointOnBox.x * box->GetLocalX() +
-			closestPointOnBox.y * box->GetLocalY();
+		// and convert back into world coordinates
+
+		glm::vec2 closestPointOnBoxWorld = box->GetPosition() + closestPointOnBoxBox.x * box->GetLocalX()
+															  + closestPointOnBoxBox.y * box->GetLocalY();
 
 		glm::vec2 circleToBox = sphere->GetPosition() - closestPointOnBoxWorld;
 		float penetration = sphere->GetRadius() - glm::length(circleToBox);

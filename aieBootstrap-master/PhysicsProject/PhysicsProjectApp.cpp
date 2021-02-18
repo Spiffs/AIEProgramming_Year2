@@ -31,20 +31,20 @@ bool PhysicsProjectApp::startup() {
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
 	m_physicsScene = new PhysicsScene();
-	m_billiards = new Billiards();
+	//m_billiards = new Billiards();
 
 	m_physicsScene->SetGravity(glm::vec2(0, -10));
 
 	// Lower the valu, the more accurate the simulation will be;
 	// but it will increase the processing time required.
 	// If it is too high it causes the sim to stutter and reduce stability.
-	m_billiards->SetTimeStep(0.01f);
+	//m_billiards->SetTimeStep(0.01f);
 
-	//DrawRect();
+	DrawRect();
 	//SphereAndPlane();
 	//SpringTest(10);
 	//TriggerTest();
-	m_billiards->StartUp();
+	//m_billiards->StartUp();
 
 	return true;
 }
@@ -65,9 +65,9 @@ void PhysicsProjectApp::update(float deltaTime)
 	m_physicsScene->Update(deltaTime);
 	m_physicsScene->Draw();
 
-	m_billiards->Update(deltaTime);
-	// draw billiards
-	m_billiards->Draw();
+	//m_billiards->Update(deltaTime);
+	//// draw billiards
+	//m_billiards->Draw();
 
 	if (input->isMouseButtonDown(0))
 	{
@@ -78,7 +78,16 @@ void PhysicsProjectApp::update(float deltaTime)
 		std::cout << worldPos.x << ", " << worldPos.y << std::endl;
 	}
 
-
+	if (input->isMouseButtonDown(0))
+	{
+		for (auto box : m_physicsScene->m_actors)
+		{
+			if (box->GetShapeID() == BOX)
+			{
+				box->SetKinematic(true);
+			}
+		}
+	}
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -130,7 +139,7 @@ glm::vec2 PhysicsProjectApp::ScreenToWorld(glm::vec2 a_screenPos)
 void PhysicsProjectApp::DrawRect()
 {
 	m_physicsScene->AddActor(new Sphere(glm::vec2(20, 10), glm::vec2(-10, -17), 1, 3, glm::vec4(1, 0, 0, 1)));
-	m_physicsScene->AddActor(new Plane(glm::vec2(-0.65, 0.75), -25));
+	m_physicsScene->AddActor(new Plane(glm::vec2(-0.65f, 0.75f), -25));
 
 	Box* box1 = new Box(glm::vec2(-20, 0), glm::vec2(16, -4), 1, 4, 8, 4, glm::vec4(1, 0, 0, 1));
 	box1->SetRotation(0.5f);
@@ -144,7 +153,7 @@ void PhysicsProjectApp::DrawRect()
 	box2->ApplyForce(glm::vec2(-15, 0), glm::vec2(0));
 
 	Sphere* ball = new Sphere(glm::vec2(5, 10), glm::vec2(0), 1, 3, glm::vec4(0, 0, 1, 1));
-	ball->SetRotation(0.5);
+	ball->SetRotation(0.5f);
 	m_physicsScene->AddActor(ball);
 	ball->SetKinematic(true);
 }
