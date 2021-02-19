@@ -4,6 +4,7 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Box.h"
+#include "PhysicsProjectApp.h"
 
 #include <list>
 #include <iostream>
@@ -24,12 +25,19 @@ PhysicsScene::PhysicsScene()
 	m_gravity = glm::vec2(0, 0);
 }
 
+PhysicsScene::PhysicsScene(PhysicsProjectApp* a_physicsProjectApp) : PhysicsScene()
+{
+	m_physicsProjectApp = a_physicsProjectApp;
+}
+
 PhysicsScene::~PhysicsScene()
 {
 	for (auto pActor : m_actors)
 	{
 		delete pActor;
 	}
+
+	delete m_physicsProjectApp;
 }
 
 void PhysicsScene::AddActor(PhysicsObject* a_actor)
@@ -119,7 +127,9 @@ void PhysicsScene::CheckForCollision()
 void PhysicsScene::ApplyContactForces(Rigidbody* a_actor1, Rigidbody* a_actor2, glm::vec2 a_collisionNorm, float a_pen)
 {
 	if ((a_actor1 && a_actor1->isTrigger()) || (a_actor2 && a_actor2->isTrigger()))
+	{
 		return;
+	}
 
 	float body2Mass = a_actor2 ? a_actor2->GetMass() : INT_MAX;
 	float body1Factor = body2Mass / (a_actor1->GetMass() + body2Mass);
@@ -237,39 +247,46 @@ bool PhysicsScene::Sphere2Sphere(PhysicsObject* obj1, PhysicsObject* obj2)
 	return false;
 }
 
-
-
 bool PhysicsScene::Sphere2Box(PhysicsObject* objSphere, PhysicsObject* objBox)
 {
-	Box* box = dynamic_cast<Box*>(objBox);
 	Sphere* sphere = dynamic_cast<Sphere*>(objSphere);
+	Box* box = dynamic_cast<Box*>(objBox);
+
 	if (box != nullptr && sphere != nullptr)
 	{
-		// transform the circle into the box's coordinate space
+		// Transform the circle into the box's coordinate space
 		glm::vec2 circlePosWorld = sphere->GetPosition() - box->GetPosition();
 		glm::vec2 circlePosBox = glm::vec2(glm::dot(circlePosWorld, box->GetLocalX()),
 			glm::dot(circlePosWorld, box->GetLocalY()));
 
-		// find the closest point to the circle centre on the box by clamping the coordinates in box-space to the box's extents
-		glm::vec2 closestPointOnBoxBox = circlePosBox;
+		// Find the closest point to the circle's center on the box
+		// by clamping the coordinates in the box-space to the box's extents
+		glm::vec2 closestPointOnBox = circlePosBox;
 		glm::vec2 extents = box->GetExtents();
 
-		if (closestPointOnBoxBox.x < -extents.x)
-			closestPointOnBoxBox.x = -extents.x;
+		if (closestPointOnBox.x < -extents.x)
+		{
+			closestPointOnBox.x = -extents.x;
+		}
 
-		if (closestPointOnBoxBox.x > extents.x)
-			closestPointOnBoxBox.x = extents.x;
+		if (closestPointOnBox.x > extents.x)
+		{
+			closestPointOnBox.x = extents.x;
+		}
 
-		if (closestPointOnBoxBox.y < -extents.y)
-			closestPointOnBoxBox.y = -extents.y;
+		if (closestPointOnBox.y < -extents.y)
+		{
+			closestPointOnBox.y = -extents.y;
+		}
 
-		if (closestPointOnBoxBox.y > extents.y)
-			closestPointOnBoxBox.y = extents.y;
+		if (closestPointOnBox.y > extents.y)
+		{
+			closestPointOnBox.y = extents.y;
+		}
 
-		// and convert back into world coordinates
-
-		glm::vec2 closestPointOnBoxWorld = box->GetPosition() + closestPointOnBoxBox.x * box->GetLocalX()
-															  + closestPointOnBoxBox.y * box->GetLocalY();
+		// Now convert it back into world coordinates
+		glm::vec2 closestPointOnBoxWorld = box->GetPosition() + closestPointOnBox.x * box->GetLocalX() +
+			closestPointOnBox.y * box->GetLocalY();
 
 		glm::vec2 circleToBox = sphere->GetPosition() - closestPointOnBoxWorld;
 		float penetration = sphere->GetRadius() - glm::length(circleToBox);

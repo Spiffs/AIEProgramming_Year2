@@ -136,6 +136,9 @@ void Billiards::UpdateLocal(float deltaTime)
 		ball->FixedUpdate(glm::vec2(0), deltaTime);
 	}
 
+
+
+	
 	this->Update(deltaTime);
 }
 

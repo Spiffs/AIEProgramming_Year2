@@ -2,7 +2,7 @@
 #include "Box.h"
 
 Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height)
-	: Rigidbody(BOX, a_position, a_velocity, a_rotation, a_mass)
+	: Rigidbody(BOX, a_position, a_velocity, a_mass, a_rotation)
 {
 	m_extents = glm::vec2(a_width, a_height);
 	m_color = glm::vec4(1, 0, 0, 1);
@@ -10,7 +10,7 @@ Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_m
 }
 
 Box::Box(glm::vec2 a_position, glm::vec2 a_velocity, float a_rotation, float a_mass, float a_width, float a_height, glm::vec4 a_color)
-	: Rigidbody(BOX, a_position, a_velocity, a_rotation, a_mass)
+	: Rigidbody(BOX, a_position, a_velocity, a_mass, a_rotation)
 {
 	m_extents = glm::vec2(a_width, a_height);
 	m_color = a_color;
@@ -46,7 +46,7 @@ void Box::MakeGizmo()
 
 bool Box::CheckBoxCorners(const Box& a_box, glm::vec2& a_contact, int& a_numContacts, float& a_pen, glm::vec2& a_edgeNormal)
 {
-	float minX, maxX, minY, maxY;
+	float minX = 0, maxX = 0, minY = 0, maxY = 0;
 	float boxW = a_box.GetExtents().x * 2;
 	float boxH = a_box.GetExtents().y * 2;
 	int numLocalContacts = 0;

@@ -2,6 +2,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+class PhysicsProjectApp;
+
 class Rigidbody;
 
 class PhysicsObject;
@@ -10,6 +12,7 @@ class PhysicsScene
 {
 public:
 	PhysicsScene();
+	PhysicsScene(PhysicsProjectApp* a_physicsProjectApp);
 	~PhysicsScene();
 
 	void AddActor(PhysicsObject* a_actor);
@@ -17,7 +20,7 @@ public:
 
 	// This will call the update of each PhysicsObject and updates internally.
 	// This will handle collision detection and resolution
-	virtual void Update(float dt);
+	void Update(float dt);
 
 	// Called once per frame and handles the rendering of PhysicsObject.
 	// Will add to a loop of Gizmo objects to render.
@@ -47,6 +50,8 @@ public:
 
 	std::vector<PhysicsObject*> m_actors;
 protected:
+	PhysicsProjectApp* m_physicsProjectApp;
+
 	glm::vec2 m_gravity;
 	float m_timeStep;
 

@@ -19,11 +19,13 @@ public:
 	virtual void draw();
 
 	glm::vec2 ScreenToWorld(glm::vec2 a_screenPos);
+	glm::vec2 WorldToScreen(glm::vec2 a_worldPos);
 
 	void DrawRect();
 	void SphereAndPlane();
 	void SpringTest(int a_amount);
 	void TriggerTest();
+	aie::Renderer2D* GetRenderer() { return m_2dRenderer; }
 
 protected:
 

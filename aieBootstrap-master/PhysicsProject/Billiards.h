@@ -5,6 +5,7 @@
 #include "Rigidbody.h"
 #include <list>
 #include "PhysicsScene.h"
+#include <Texture.h>
 
 static glm::vec4 BLUE(0, 0, 1, 1);
 static glm::vec4 RED(1, 0, 0, 1);
@@ -20,26 +21,29 @@ class Billiards : public PhysicsScene
 {
 public:
 	Billiards() {}
-	~Billiards() {}
+	Billiards(PhysicsProjectApp* a_physicsProjectApp) : PhysicsScene(a_physicsProjectApp) {}
+	~Billiards();
 
 	void StartUp();
 	void UpdateLocal(float deltaTime);
-	void Draw();
+	void DrawGizmos();
+	void DrawSprites();
 
 protected:
 	float m_radius = 2.5f;
-	 
+
 	// play area
-	Box* m_backdrop = new Box(glm::vec2(0), glm::vec2(0), 0, 1000, 110, 60, GREEN);
-	Box* m_topBorder = new Box(glm::vec2(0, 50.5f), glm::vec2(0), 0, 1000, 100, 6, glm::vec4(.4f, .2f, 0, 1));
-	Box* m_bottomBorder = new Box(glm::vec2(0, -54), glm::vec2(0), 0, 1000, 100, 3, glm::vec4(.4f, .2f, 0, 1));
-	Box* m_rightBorder = new Box(glm::vec2(98, 0), glm::vec2(0), 0, 1000, 3, 55, glm::vec4(.4f, .2f, 0, 1));
-	Box* m_leftBorder = new Box(glm::vec2(-98, 0), glm::vec2(0), 0, 1000, 3, 55, glm::vec4(.4f, .2f, 0, 1));
+	Box* m_backdrop;
+	Box* m_topBorder;
+	Box* m_bottomBorder;
+	Box* m_rightBorder;
+	Box* m_leftBorder;
 
-	// white ball (player)
+	// player
 	Sphere* m_ballPlayer;
+	Box* m_cueplayer;
 
-	// solid balls
+	// full balls
 	Sphere* m_ball1;
 	Sphere* m_ball2;
 	Sphere* m_ball3;
@@ -59,7 +63,37 @@ protected:
 	Sphere* m_ball13;
 	Sphere* m_ball14;
 	Sphere* m_ball15;
+	 
+#pragma region TEXTURES
+
+	// textures
+
+	// player
+	aie::Texture* t_ballPlayer;
+	aie::Texture* t_cueplayer;
+
+	// full balls
+	aie::Texture* t_ball1;
+	aie::Texture* t_ball2;
+	aie::Texture* t_ball3;
+	aie::Texture* t_ball4;
+	aie::Texture* t_ball5;
+	aie::Texture* t_ball6;
+	aie::Texture* t_ball7;
+
+	// 8 ball		
+	aie::Texture* t_ball8;
+
+	// stripped balls
+	aie::Texture* t_ball9;
+	aie::Texture* t_ball10;
+	aie::Texture* t_ball11;
+	aie::Texture* t_ball12;
+	aie::Texture* t_ball13;
+	aie::Texture* t_ball14;
+	aie::Texture* t_ball15;
 
 
+#pragma endregion
 };
 

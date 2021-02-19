@@ -14,6 +14,8 @@ PhysicsProjectApp::PhysicsProjectApp()
 
 }
 
+	
+
 PhysicsProjectApp::~PhysicsProjectApp()
 {
 
@@ -30,21 +32,21 @@ bool PhysicsProjectApp::startup() {
 	// the following path would be used instead: "./font/consolas.ttf"
 	m_font = new aie::Font("../bin/font/consolas.ttf", 32);
 
-	m_physicsScene = new PhysicsScene();
-	//m_billiards = new Billiards();
+	/*m_physicsScene = new PhysicsScene();*/
+	m_billiards = new Billiards(this);
 
-	m_physicsScene->SetGravity(glm::vec2(0, -10));
+	/*m_physicsScene->SetGravity(glm::vec2(0, -25));*/
 
 	// Lower the valu, the more accurate the simulation will be;
 	// but it will increase the processing time required.
 	// If it is too high it causes the sim to stutter and reduce stability.
-	//m_billiards->SetTimeStep(0.01f);
+	m_billiards->SetTimeStep(0.01f);
 
-	DrawRect();
+	/*DrawRect();*/
 	//SphereAndPlane();
 	//SpringTest(10);
 	//TriggerTest();
-	//m_billiards->StartUp();
+	m_billiards->StartUp();
 
 	return true;
 }
@@ -53,6 +55,8 @@ void PhysicsProjectApp::shutdown() {
 
 	delete m_font;
 	delete m_2dRenderer;
+
+	delete m_billiards;
 }
 
 void PhysicsProjectApp::update(float deltaTime)
@@ -62,12 +66,14 @@ void PhysicsProjectApp::update(float deltaTime)
 
 	aie::Gizmos::clear();
 
-	m_physicsScene->Update(deltaTime);
-	m_physicsScene->Draw();
+	//m_physicsScene->Update(deltaTime);
+	//m_physicsScene->Draw();
 
-	//m_billiards->Update(deltaTime);
-	//// draw billiards
-	//m_billiards->Draw();
+
+	m_billiards->UpdateLocal(deltaTime);
+	// draw gizmos
+	m_billiards->DrawGizmos();
+
 
 	if (input->isMouseButtonDown(0))
 	{
@@ -76,17 +82,6 @@ void PhysicsProjectApp::update(float deltaTime)
 		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
 		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3f));
 		std::cout << worldPos.x << ", " << worldPos.y << std::endl;
-	}
-
-	if (input->isMouseButtonDown(0))
-	{
-		for (auto box : m_physicsScene->m_actors)
-		{
-			if (box->GetShapeID() == BOX)
-			{
-				box->SetKinematic(true);
-			}
-		}
 	}
 
 	// exit the application
@@ -105,9 +100,12 @@ void PhysicsProjectApp::draw() {
 	// x-axis = -100 to 100, y-axis = -56.25 to 65.25 (m_extents = 100 / 16:9)
 	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.0f, 1.0f));
 
-	// draw your stuff here!
+
+	// draw sprites here
+	m_billiards->DrawSprites();
 
 
+	//m_2dRenderer->drawSprite(new aie::Texture("../bin/textures/Billiards/ball1.png"), 0, 0, 2000, 2000, 0);
 
 	char fps[32];
 	sprintf_s(fps, 32, "FPS %i", getFPS());
@@ -134,6 +132,19 @@ glm::vec2 PhysicsProjectApp::ScreenToWorld(glm::vec2 a_screenPos)
 
 
 	return worldPos;
+}
+
+glm::vec2 PhysicsProjectApp::WorldToScreen(glm::vec2 a_worldPos)
+{
+	glm::vec2 screenPos = a_worldPos;
+
+	screenPos.x /= 2.f * m_extents / getWindowWidth();
+	screenPos.y /= 2.f * m_extents / (m_aspectRatio * getWindowHeight());
+
+	screenPos.x += getWindowWidth() / 2;
+	screenPos.y += getWindowHeight() / 2;
+
+	return screenPos;
 }
 
 void PhysicsProjectApp::DrawRect()
