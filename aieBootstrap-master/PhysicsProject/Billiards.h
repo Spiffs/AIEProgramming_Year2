@@ -32,6 +32,15 @@ public:
 protected:
 	float m_radius = 2.5f;
 
+	// update variables
+	
+	bool turn;
+	bool turnUpdate;
+	
+	glm::vec2 m_mousePosOnDown;
+
+
+
 	// play area
 	Box* m_backdrop;
 	Box* m_topBorder;
@@ -70,7 +79,7 @@ protected:
 
 	// player
 	aie::Texture* t_ballPlayer;
-	aie::Texture* t_cueplayer;
+	aie::Texture* t_cuePlayer;
 
 	// full balls
 	aie::Texture* t_ball1;

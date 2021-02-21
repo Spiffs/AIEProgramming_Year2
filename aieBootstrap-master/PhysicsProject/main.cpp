@@ -1,7 +1,7 @@
 #include "PhysicsProjectApp.h"
 
 int main() {
-	
+
 	// allocation
 	auto app = new PhysicsProjectApp();
 

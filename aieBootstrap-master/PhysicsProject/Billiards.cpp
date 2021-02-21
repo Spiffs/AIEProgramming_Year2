@@ -1,15 +1,19 @@
 #include "Billiards.h"
 #include <Renderer2D.h>
 #include "PhysicsProjectApp.h"
-
+#include "Input.h"
 
 Billiards::~Billiards()
 {
-	for (auto ball : m_actors)
-	{
-		delete ball;
-	}
+	// already done in PhysicsScene
+	//for (auto ball : m_actors)
+	//{
+	//	delete ball;
+	//}
 	
+	delete t_ballPlayer;
+	delete t_cuePlayer;
+
 	delete t_ball1;
 	delete t_ball2;
 	delete t_ball3;
@@ -39,7 +43,8 @@ void Billiards::StartUp()
 	m_leftBorder = new Box(glm::vec2(-98, 0), glm::vec2(0), 0, 1000, 3, 55, glm::vec4(.4f, .2f, 0, 1));
 
 	// player
-	m_ballPlayer = new Sphere(glm::vec2(0, 0), glm::vec2(200, 0), 3, m_radius, WHITE);
+	m_cueplayer = new Box(glm::vec2(0), glm::vec2(0), 0, 1, 10, 2, WHITE);
+	m_ballPlayer = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 3, m_radius, WHITE);
 
 	// solid balls
 	m_ball1 = new Sphere(glm::vec2(30, 0), glm::vec2(0), 2, m_radius, YELLOW);
@@ -65,6 +70,7 @@ void Billiards::StartUp()
 	
 #pragma endregion
 
+#pragma region TEXTURE
 	// pushing to list to draw
 	AddActor(m_backdrop);
 	AddActor(m_topBorder);
@@ -103,7 +109,7 @@ void Billiards::StartUp()
 
 	// players
 	t_ballPlayer = new aie::Texture("../bin/textures/Billiards/ballwhite.png");
-	t_cueplayer = new aie::Texture("../bin/textures/Billiards/poolcue.png");
+	t_cuePlayer = new aie::Texture("../bin/textures/Billiards/poolcue.png");
 
 	// full balls
 	t_ball1 = new aie::Texture("../bin/textures/Billiards/ball1.png");
@@ -125,12 +131,39 @@ void Billiards::StartUp()
 	t_ball13 = new aie::Texture("../bin/textures/Billiards/ball13.png");
 	t_ball14 = new aie::Texture("../bin/textures/Billiards/ball14.png");
 	t_ball15 = new aie::Texture("../bin/textures/Billiards/ball15.png");
+
+#pragma endregion
 }
 
 void Billiards::UpdateLocal(float deltaTime)
 {
-	//m_ballPlayer->ApplyForce(glm::vec2(1, 0), glm::vec2(0));
+	// game logic update
+	aie::Input* input = aie::Input::getInstance();
 
+	// debug
+	if (input->isMouseButtonDown(1))
+	{
+		std::cout;
+	}
+
+	float distancefromball = 10;
+	glm::vec2 whiteballpos = m_ballPlayer->GetPosition();
+	glm::vec2 cuepos(0);
+	cuepos = glm::vec2((whiteballpos.x + glm::normalize(whiteballpos.x - input->getMouseX()) * distancefromball),
+					   (whiteballpos.y + glm::normalize(whiteballpos.y - input->getMouseY()) * distancefromball));
+	
+	m_cueplayer->SetPosition(cuepos);
+
+
+	if (input->isMouseButtonDown(0))
+	{
+
+	}
+
+
+
+
+	// physics update
 	for (auto ball : m_actors)
 	{
 		ball->FixedUpdate(glm::vec2(0), deltaTime);
@@ -171,6 +204,9 @@ void Billiards::DrawSprites()
 	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball14, m_physicsProjectApp->WorldToScreen(m_ball14->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball14->GetPosition()).y, 35, 35, m_ball14->GetRotation() / 8);
 	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball15, m_physicsProjectApp->WorldToScreen(m_ball15->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball15->GetPosition()).y, 35, 35, m_ball15->GetRotation() / 8);
 	m_physicsProjectApp->GetRenderer()->drawSprite(t_ballPlayer, m_physicsProjectApp->WorldToScreen(m_ballPlayer->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ballPlayer->GetPosition()).y, 35, 35, m_ballPlayer->GetRotation() / 8);
+
+	if (turn)
+		m_physicsProjectApp->GetRenderer()->drawSprite(t_cuePlayer, m_physicsProjectApp->WorldToScreen(m_cueplayer->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_cueplayer->GetPosition()).y, 8, 250, m_cueplayer->GetRotation() / 8);
 #pragma endregion
 
 }
