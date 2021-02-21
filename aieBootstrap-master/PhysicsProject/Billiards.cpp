@@ -10,7 +10,7 @@ Billiards::~Billiards()
 	//{
 	//	delete ball;
 	//}
-	
+
 	delete t_ballPlayer;
 	delete t_cuePlayer;
 
@@ -66,8 +66,8 @@ void Billiards::StartUp()
 	m_ball13 = new Sphere(glm::vec2(50, 12), glm::vec2(0), 2, m_radius, ORANGE);
 	m_ball14 = new Sphere(glm::vec2(50, 0), glm::vec2(0), 2, m_radius, GREEN);
 	m_ball15 = new Sphere(glm::vec2(50, -12), glm::vec2(0), 2, m_radius, BROWN);
-	
-	
+
+
 #pragma endregion
 
 #pragma region TEXTURE
@@ -141,17 +141,28 @@ void Billiards::UpdateLocal(float deltaTime)
 	aie::Input* input = aie::Input::getInstance();
 
 	// debug
-	if (input->isMouseButtonDown(1))
+	if (input->isMouseButtonDown(0))
 	{
-		std::cout;
+		float yeah = 1;
+		yeah = 0;
 	}
 
-	float distancefromball = 10;
+	// set distance to ball 
+	float distancefromball = 30;
+	// get white ball world position
 	glm::vec2 whiteballpos = m_ballPlayer->GetPosition();
+	// get mouse screen position then convert to world
+	int mousex, mousey;
+	input->getMouseXY(&mousex, &mousey);
+	// convert to world and convert ints to floats
+	glm::vec2 mousexy(m_physicsProjectApp->ScreenToWorld(glm::vec2(mousex, mousey)));
+	// get the direction
 	glm::vec2 cuepos(0);
-	cuepos = glm::vec2((whiteballpos.x + glm::normalize(whiteballpos.x - input->getMouseX()) * distancefromball),
-					   (whiteballpos.y + glm::normalize(whiteballpos.y - input->getMouseY()) * distancefromball));
-	
+
+	glm::vec2 normal(glm::normalize(mousexy - whiteballpos));
+	cuepos = glm::vec2((whiteballpos.x + normal.x * distancefromball),
+					   (whiteballpos.y + normal.y * distancefromball));
+
 	m_cueplayer->SetPosition(cuepos);
 
 
@@ -159,9 +170,6 @@ void Billiards::UpdateLocal(float deltaTime)
 	{
 
 	}
-
-
-
 
 	// physics update
 	for (auto ball : m_actors)
@@ -186,7 +194,7 @@ void Billiards::DrawSprites()
 	{
 		ball->MakeGizmo();
 	}
-	
+
 #pragma region PRINTING SPRITES
 	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball1, m_physicsProjectApp->WorldToScreen(m_ball1->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball1->GetPosition()).y, 35, 35, m_ball1->GetRotation() / 8);
 	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball2, m_physicsProjectApp->WorldToScreen(m_ball2->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball2->GetPosition()).y, 35, 35, m_ball2->GetRotation() / 8);
