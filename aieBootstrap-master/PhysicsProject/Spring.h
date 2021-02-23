@@ -9,7 +9,7 @@
 class Spring : public PhysicsObject
 {
 public:
-	Spring(Rigidbody* a_actor1, Rigidbody* a_actor2, float a_damping, float a_springCoefficient,float a_restLength = 0,
+	Spring(Rigidbody* a_actor1, Rigidbody* a_actor2, float a_damping, float a_springCoefficient, float a_restLength = 0,
 		glm::vec2 a_contact1 = glm::vec2(0), glm::vec2 a_contact2 = glm::vec2(0));
 	~Spring();
 

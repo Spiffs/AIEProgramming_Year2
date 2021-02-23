@@ -34,16 +34,16 @@ public:
 
 	std::function<void(PhysicsObject*)> m_collisionCallback;
 
-	void TriggerEntered(PhysicsObject* a_otherActor);
-	std::function<void(PhysicsObject*)> triggerEnter;
-	std::function<void(PhysicsObject*)> triggerExit;
+	void TriggerEntered(Rigidbody* a_otherActor);
+	std::function<void(Rigidbody*)> triggerEnter;
+	std::function<void(Rigidbody*)> triggerExit;
 	bool isTrigger() { return m_isTrigger; }
 	bool SetTrigger(bool a_state) { return m_isTrigger = a_state; }
 
 protected:
 	bool m_isTrigger;
-	std::list<PhysicsObject*> m_objectInside;
-	std::list<PhysicsObject*> m_objectInsideThisFrame;
+	std::list<Rigidbody*> m_objectInside;
+	std::list<Rigidbody*> m_objectInsideThisFrame;
 
 	glm::vec2 m_position;
 	glm::vec2 m_velocity;

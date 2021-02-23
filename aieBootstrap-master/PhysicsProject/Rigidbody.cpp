@@ -15,7 +15,7 @@ Rigidbody::Rigidbody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velo
 	m_isKinematic = false;
 	m_isTrigger = false;
 	m_elasticity = 0.8f;
-	m_linearDrag = 0.6f;
+	m_linearDrag = 0.5f;
 	m_angularDrag = 0.6f;
 }
 
@@ -152,7 +152,7 @@ glm::vec2 Rigidbody::ToWorld(glm::vec2 a_localPos)
 	return m_position + m_localX * a_localPos.x + m_localY * a_localPos.y;
 }
 
-void Rigidbody::TriggerEntered(PhysicsObject* a_otherActor)
+void Rigidbody::TriggerEntered(Rigidbody* a_otherActor)
 {
 	if (m_isTrigger && std::find(m_objectInside.begin(), m_objectInside.end(), a_otherActor) == m_objectInside.end())
 	{

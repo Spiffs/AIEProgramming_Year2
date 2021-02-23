@@ -3,9 +3,9 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "Rigidbody.h"
-#include <list>
 #include "PhysicsScene.h"
 #include <Texture.h>
+#include <vector>
 
 static glm::vec4 BLUE(0, 0, 1, 1);
 static glm::vec4 RED(1, 0, 0, 1);
@@ -32,14 +32,15 @@ public:
 protected:
 	float m_radius = 2.5f;
 
-	// update variables
-	
+	// update variables	
 	bool turn;
 	bool turnUpdate;
 	
-	glm::vec2 m_mousePosOnDown;
+	glm::vec2 m_mousePosOnDown = glm::vec2(NULL);
+	float m_distanceFromBall = 30;
 
-
+	std::vector<aie::Texture*> m_textures;
+	std::vector<Rigidbody*> m_sunkBalls;
 
 	// play area
 	Box* m_backdrop;
@@ -47,6 +48,22 @@ protected:
 	Box* m_bottomBorder;
 	Box* m_rightBorder;
 	Box* m_leftBorder;
+	//holes
+	Sphere* m_sinkTopLeft;
+	Sphere* m_sinkTopMiddle;
+	Sphere* m_sinkTopRight;
+	Sphere* m_sinkBottomLeft;
+	Sphere* m_sinkBottomMiddle;
+	Sphere* m_sinkBottomRight;
+	// hole boxes
+	Box* m_linerTopLeft;
+	Box* m_linerTopMiddle;
+	Box* m_linerTopRight;
+	Box* m_linerBottomLeft;
+
+	Box* m_linerBottomMiddle;
+	Box* m_linerBottomRight;
+
 
 	// player
 	Sphere* m_ballPlayer;

@@ -14,7 +14,7 @@ PhysicsProjectApp::PhysicsProjectApp()
 
 }
 
-	
+
 
 PhysicsProjectApp::~PhysicsProjectApp()
 {
@@ -75,18 +75,21 @@ void PhysicsProjectApp::update(float deltaTime)
 	m_billiards->DrawGizmos();
 
 
-	if (input->isMouseButtonDown(0))
-	{
-		int xScreen, yScreen;
-		input->getMouseXY(&xScreen, &yScreen);
-		glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
-		aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3f));
-		std::cout << worldPos.x << ", " << worldPos.y << std::endl;
-	}
+	//if (input->isMouseButtonDown(0))
+	//{
+	//	int xScreen, yScreen;
+	//	input->getMouseXY(&xScreen, &yScreen);
+	//	glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
+	//	aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3f));
+	//	std::cout << worldPos.x << ", " << worldPos.y << std::endl;
+	//}
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
+	{
 		quit();
+	}
+
 }
 
 void PhysicsProjectApp::draw() {
@@ -230,6 +233,6 @@ void PhysicsProjectApp::TriggerTest()
 	m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(3, 0), 0.5, 4, 8, 4));
 	m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(3, 0), 0.5, 4, 8, 4));
 
-	ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
-	ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
+	//ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
+	//ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
 }
