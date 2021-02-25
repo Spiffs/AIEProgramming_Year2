@@ -21,16 +21,16 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float vertical = Input.GetAxis("Vertical");
         float horizontal = Input.GetAxis("Horizontal");
-
-        controller.SimpleMove(transform.forward * vertical * speed * Time.deltaTime);
+        
+        controller.SimpleMove(transform.forward * vertical * speed * Time.fixedDeltaTime);
 
         controller.SimpleMove(transform.up * Time.deltaTime);
-        transform.Rotate(transform.up, horizontal * speed * Time.deltaTime);
-        animator.SetFloat("Speed", vertical * speed * Time.deltaTime);
+        transform.Rotate(transform.up, horizontal * speed * Time.fixedDeltaTime);
+        animator.SetFloat("Speed", vertical * speed * Time.fixedDeltaTime);
     }
 
 

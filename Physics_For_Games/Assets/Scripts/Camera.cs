@@ -10,14 +10,14 @@ public class Camera : MonoBehaviour
     void FixedUpdate()
     {
         transform.position = target.transform.position + offset;
-
+        
         if (Input.GetKey(KeyCode.K))
         {
-            transform.Rotate(Vector3.up * 50 * Time.deltaTime);
+            transform.RotateAround(target.transform.position, transform.up, 5 * Time.fixedDeltaTime);
         }
         if (Input.GetKey(KeyCode.J))
         {
-            transform.Rotate(Vector3.up * -50 * Time.deltaTime);
+            transform.RotateAround(target.transform.position, -transform.up, 5 * Time.fixedDeltaTime);
         }
     }
 
