@@ -20,13 +20,13 @@ public:
 	virtual void drawBox(float xPos, float yPos, float width, float height, float rotation = 0.0f, float depth = 0.0f);
 	virtual void drawCircle(float xPos, float yPos, float radius, float depth = 0.0f);
 
-	// if texture is nullptr then it renders a coloured sprite
+	// if texture is nullptr then it renders a colored sprite
 	// depth is in the range [0,100] with lower being closer to the viewer
 	virtual void drawSprite(Texture* texture, float xPos, float yPos, float width = 0.0f, float height = 0.0f, float rotation = 0.0f, float depth = 0.0f, float xOrigin = 0.5f, float yOrigin = 0.5f);
 	virtual void drawSpriteTransformed3x3(Texture* texture, float* transformMat3x3, float width = 0.0f, float height = 0.0f, float depth = 0.0f, float xOrigin = 0.5f, float yOrigin = 0.5f);
 	virtual void drawSpriteTransformed4x4(Texture* texture, float* transformMat4x4, float width = 0.0f, float height = 0.0f, float depth = 0.0f, float xOrigin = 0.5f, float yOrigin = 0.5f);
 
-	// draws a simple coloured line with a given thickness
+	// draws a simple colored line with a given thickness
 	// depth is in the range [0,100] with lower being closer to the viewer
 	virtual void drawLine(float x1, float y1, float x2, float y2, float thickness = 1.0f, float depth = 0.0f );
 
@@ -34,9 +34,9 @@ public:
 	// depth is in the range [0,100] with lower being closer to the viewer
 	virtual void drawText(Font* font, const char* text, float xPos, float yPos, float depth = 0.0f);
 
-	// sets the tint colour for all subsequent draw calls
-	void setRenderColour(float r, float g, float b, float a = 1.0f);
-	void setRenderColour(unsigned int colour);
+	// sets the tint color for all subsequent draw calls
+	void setRenderColor(float r, float g, float b, float a = 1.0f);
+	void setRenderColor(unsigned int color);
 
 	// can be used to set the texture coordinates of sprites using textures
 	// for all subsequent drawSprite calls
@@ -69,7 +69,7 @@ protected:
 	// texture coordinate information
 	float				m_uvX, m_uvY, m_uvW, m_uvH;
 
-	// represents colour in red, green, blue and alpha 0.0-1.0 range
+	// represents color in red, green, blue and alpha 0.0-1.0 range
 	float				m_r, m_g, m_b, m_a;
 
 	// sprite handling

@@ -27,8 +27,8 @@ namespace aie {
 		// wipes the screen clear to begin a frame of drawing
 		void clearScreen();
 
-		// sets the colour that the sceen is cleared to
-		void setBackgroundColour(float r, float g, float b, float a = 1.0f);
+		// sets the color that the sceen is cleared to
+		void setBackgroundColor(float r, float g, float b, float a = 1.0f);
 
 		// show or hide the OS cursor
 		void setShowCursor(bool visible);

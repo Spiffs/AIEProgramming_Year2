@@ -19,7 +19,7 @@ Application3D::~Application3D() {
 
 bool Application3D::startup() {
 	
-	setBackgroundColour(0.25f, 0.25f, 0.25f);
+	setBackgroundColor(0.25f, 0.25f, 0.25f);
 
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
@@ -90,7 +90,7 @@ void Application3D::update(float deltaTime) {
 
 void Application3D::draw() {
 
-	// wipe the screen to the background colour
+	// wipe the screen to the background color
 	clearScreen();
 
 	// update perspective in case window resized

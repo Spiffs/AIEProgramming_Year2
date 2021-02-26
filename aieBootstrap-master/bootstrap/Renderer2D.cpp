@@ -10,7 +10,7 @@ namespace aie {
 
 Renderer2D::Renderer2D() {
 
-	setRenderColour(1,1,1,1);
+	setRenderColor(1,1,1,1);
 	setUVRect(0.0f, 0.0f, 1.0f, 1.0f);
 
 	m_cameraX = 0;
@@ -36,20 +36,20 @@ Renderer2D::Renderer2D() {
 
 	char* vertexShader = "#version 150\n \
 						in vec4 position; \
-						in vec4 colour; \
+						in vec4 color; \
 						in vec2 texcoord; \
-						out vec4 vColour; \
+						out vec4 vColor; \
 						out vec2 vTexCoord; \
 						out float vTextureID; \
 						uniform mat4 projectionMatrix; \
-						void main() { vColour = colour; vTexCoord = texcoord; vTextureID = position.w; \
+						void main() { vColor = color; vTexCoord = texcoord; vTextureID = position.w; \
 						gl_Position = projectionMatrix * vec4(position.x, position.y, position.z, 1.0f); }";
 
 	char* fragmentShader = "#version 150\n \
-						in vec4 vColour; \
+						in vec4 vColor; \
 						in vec2 vTexCoord; \
 						in float vTextureID; \
-						out vec4 fragColour; \
+						out vec4 fragColor; \
 						const int TEXTURE_STACK_SIZE = 16; \
 						uniform sampler2D textureStack[TEXTURE_STACK_SIZE]; \
 						uniform int isFontTexture[TEXTURE_STACK_SIZE]; \
@@ -59,9 +59,9 @@ Renderer2D::Renderer2D() {
 								vec4 rgba = texture2D(textureStack[id], vTexCoord); \
 								if (isFontTexture[id] == 1) \
 									rgba = rgba.rrrr; \
-								fragColour = rgba * vColour; \
-							} else fragColour = vColour; \
-						if (fragColour.a < 0.001f) discard; }";
+								fragColor = rgba * vColor; \
+							} else fragColor = vColor; \
+						if (fragColor.a < 0.001f) discard; }";
 	
 	unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
 	unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
@@ -76,7 +76,7 @@ Renderer2D::Renderer2D() {
 	glAttachShader(m_shader, vs);
 	glAttachShader(m_shader, fs);
 	glBindAttribLocation(m_shader, 0, "position");
-	glBindAttribLocation(m_shader, 1, "colour");
+	glBindAttribLocation(m_shader, 1, "color");
 	glBindAttribLocation(m_shader, 2, "texcoord");
 	glLinkProgram(m_shader);
 
@@ -163,7 +163,7 @@ void Renderer2D::begin() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	setRenderColour(1,1,1,1);
+	setRenderColor(1,1,1,1);
 }
 
 void Renderer2D::end() {
@@ -706,18 +706,18 @@ unsigned int Renderer2D::pushTexture(Texture* texture) {
 	return m_currentTexture++;
 }
 
-void Renderer2D::setRenderColour(float r, float g, float b, float a) {
+void Renderer2D::setRenderColor(float r, float g, float b, float a) {
 	m_r = r;
 	m_g = g;
 	m_b = b;
 	m_a = a;
 }
 
-void Renderer2D::setRenderColour(unsigned int colour) {
-	m_r = ((colour & 0xFF000000) >> 24) / 255.0f;
-	m_g = ((colour & 0x00FF0000) >> 16) / 255.0f;
-	m_b = ((colour & 0x0000FF00) >> 8) / 255.0f;
-	m_a = ((colour & 0x000000FF) >> 0) / 255.0f;
+void Renderer2D::setRenderColor(unsigned int color) {
+	m_r = ((color & 0xFF000000) >> 24) / 255.0f;
+	m_g = ((color & 0x00FF0000) >> 16) / 255.0f;
+	m_b = ((color & 0x0000FF00) >> 8) / 255.0f;
+	m_a = ((color & 0x000000FF) >> 0) / 255.0f;
 }
 
 void Renderer2D::setUVRect(float uvX, float uvY, float uvW, float uvH) {

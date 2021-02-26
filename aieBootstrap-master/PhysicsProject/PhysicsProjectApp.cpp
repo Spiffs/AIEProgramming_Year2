@@ -94,7 +94,7 @@ void PhysicsProjectApp::update(float deltaTime)
 
 void PhysicsProjectApp::draw() {
 
-	// wipe the screen to the background colour
+	// wipe the screen to the background color
 	clearScreen();
 
 	// begin drawing sprites
@@ -114,7 +114,7 @@ void PhysicsProjectApp::draw() {
 	sprintf_s(fps, 32, "FPS %i", getFPS());
 	m_2dRenderer->drawText(m_font, fps, 0, 720 - 32);
 
-	// output some text, uses the last used colour
+	// output some text, uses the last used color
 	m_2dRenderer->drawText(m_font, "Press ESC to quit", 0, 0);
 
 	// done drawing sprites
