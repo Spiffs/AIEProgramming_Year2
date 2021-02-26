@@ -7,28 +7,28 @@ using UnityEngine;
 public class FPSController : MonoBehaviour
 {
     [SerializeField]
-    [Range(1, 1000)] float MouseSensitivity;
+    [Range(1, 1000)] float mouseSensitivity = 200;
 
-    public float speed;
-    CharacterController controller;
+    public Transform playerBody;
+
+    float xRotation = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        controller = GetComponent<CharacterController>();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
-        float vertical = Input.GetAxis("Vertical");
-        float horizontal = Input.GetAxis("Horizontal");
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
-        controller.SimpleMove(transform.forward * vertical * speed * Time.fixedDeltaTime);
-        controller.SimpleMove(transform.right * horizontal * speed * Time.fixedDeltaTime);
-        controller.SimpleMove(transform.up * Time.deltaTime);
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        float rotateHorizontal = Input.GetAxis("Mouse X");
-        transform.Rotate(transform.up * rotateHorizontal * MouseSensitivity * Time.fixedDeltaTime);
+        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        playerBody.Rotate(Vector3.up * mouseX);
     }
 }
