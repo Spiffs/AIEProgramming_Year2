@@ -146,29 +146,29 @@ void Billiards::StartUp()
 	// textures
 
 	// players
-	t_ballPlayer = new aie::Texture("../bin/textures/Billiards/ballwhite.png");
-	t_cuePlayer = new aie::Texture("../bin/textures/Billiards/poolcue.png");
+	t_ballPlayer = new aie::Texture("textures/Billiards/ballwhite.png");
+	t_cuePlayer = new aie::Texture("textures/Billiards/poolcue.png");
 
 	// full balls
-	t_ball1 = new aie::Texture("../bin/textures/Billiards/ball1.png"); m_textures.push_back(t_ball1);
-	t_ball2 = new aie::Texture("../bin/textures/Billiards/ball2.png"); m_textures.push_back(t_ball2);
-	t_ball3 = new aie::Texture("../bin/textures/Billiards/ball3.png"); m_textures.push_back(t_ball3);
-	t_ball4 = new aie::Texture("../bin/textures/Billiards/ball4.png"); m_textures.push_back(t_ball4);
-	t_ball5 = new aie::Texture("../bin/textures/Billiards/ball5.png"); m_textures.push_back(t_ball5);
-	t_ball6 = new aie::Texture("../bin/textures/Billiards/ball6.png"); m_textures.push_back(t_ball6);
-	t_ball7 = new aie::Texture("../bin/textures/Billiards/ball7.png"); m_textures.push_back(t_ball7);
+	t_ball1 = new aie::Texture("textures/Billiards/ball1.png"); m_textures.push_back(t_ball1);
+	t_ball2 = new aie::Texture("textures/Billiards/ball2.png"); m_textures.push_back(t_ball2);
+	t_ball3 = new aie::Texture("textures/Billiards/ball3.png"); m_textures.push_back(t_ball3);
+	t_ball4 = new aie::Texture("textures/Billiards/ball4.png"); m_textures.push_back(t_ball4);
+	t_ball5 = new aie::Texture("textures/Billiards/ball5.png"); m_textures.push_back(t_ball5);
+	t_ball6 = new aie::Texture("textures/Billiards/ball6.png"); m_textures.push_back(t_ball6);
+	t_ball7 = new aie::Texture("textures/Billiards/ball7.png"); m_textures.push_back(t_ball7);
 
 	// 8 ball		
-	t_ball8 = new aie::Texture("../bin/textures/Billiards/ball8.png"); m_textures.push_back(t_ball9);
+	t_ball8 = new aie::Texture("textures/Billiards/ball8.png"); m_textures.push_back(t_ball9);
 
 	// stripped balls
-	t_ball9 = new aie::Texture("../bin/textures/Billiards/ball9.png");	 m_textures.push_back(t_ball9);
-	t_ball10 = new aie::Texture("../bin/textures/Billiards/ball10.png"); m_textures.push_back(t_ball10);
-	t_ball11 = new aie::Texture("../bin/textures/Billiards/ball11.png"); m_textures.push_back(t_ball11);
-	t_ball12 = new aie::Texture("../bin/textures/Billiards/ball12.png"); m_textures.push_back(t_ball12);
-	t_ball13 = new aie::Texture("../bin/textures/Billiards/ball13.png"); m_textures.push_back(t_ball13);
-	t_ball14 = new aie::Texture("../bin/textures/Billiards/ball14.png"); m_textures.push_back(t_ball14);
-	t_ball15 = new aie::Texture("../bin/textures/Billiards/ball15.png"); m_textures.push_back(t_ball15);
+	t_ball9 = new aie::Texture("textures/Billiards/ball9.png");	 m_textures.push_back(t_ball9);
+	t_ball10 = new aie::Texture("textures/Billiards/ball10.png"); m_textures.push_back(t_ball10);
+	t_ball11 = new aie::Texture("textures/Billiards/ball11.png"); m_textures.push_back(t_ball11);
+	t_ball12 = new aie::Texture("textures/Billiards/ball12.png"); m_textures.push_back(t_ball12);
+	t_ball13 = new aie::Texture("textures/Billiards/ball13.png"); m_textures.push_back(t_ball13);
+	t_ball14 = new aie::Texture("textures/Billiards/ball14.png"); m_textures.push_back(t_ball14);
+	t_ball15 = new aie::Texture("textures/Billiards/ball15.png"); m_textures.push_back(t_ball15);
 
 #pragma endregion
 }

@@ -60,7 +60,6 @@ protected:
 	Box* m_linerTopMiddle;
 	Box* m_linerTopRight;
 	Box* m_linerBottomLeft;
-
 	Box* m_linerBottomMiddle;
 	Box* m_linerBottomRight;
 
