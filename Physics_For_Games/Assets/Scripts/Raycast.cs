@@ -17,5 +17,4 @@ public class Raycast : MonoBehaviour
             output.text = hitInfo.transform.gameObject.name;
         }
     }
-
 }

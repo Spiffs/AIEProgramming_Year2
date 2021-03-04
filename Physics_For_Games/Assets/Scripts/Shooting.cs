@@ -5,13 +5,8 @@ using UnityEngine.UI;
 
 public class Shooting : MonoBehaviour
 {
-    public GameObject FPSCamObject;
-    private Camera fpsCamera;
-
-    private void Start()
-    {
-        fpsCamera = FPSCamObject.GetComponent<Camera>();
-    }
+    public Camera fpsCamera;
+    public ParticleSystem muzzleFlash;
 
     // Update is called once per frame
     void Update()
@@ -26,12 +21,18 @@ public class Shooting : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(fpsCamera.transform.position, fpsCamera.transform.forward, out hit))
         {
+            if (muzzleFlash != null)
+                muzzleFlash.Play();
+
             Debug.Log(hit.transform.name + "Hit but no ragdoll");
             Ragdoll r = hit.transform.gameObject.GetComponent<Ragdoll>();
-            if (r != null)
-            {
-                Debug.Log(hit.transform.name);
+            Rigidbody hitRB = hit.transform.GetComponent<Rigidbody>();
+
+            if (r != null && r.RagdollOn == false)
                 r.RagdollOn = true;
+            else if (hitRB != null)
+            {
+                hitRB.AddForceAtPosition(-hit.normal * 50, hit.point, ForceMode.Impulse);
             }
         }
     }

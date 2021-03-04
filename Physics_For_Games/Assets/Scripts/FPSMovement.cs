@@ -27,7 +27,7 @@ public class FPSMovement : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask);
 
-        if (isGrounded && velocity.y  < 0)
+        if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
@@ -37,7 +37,14 @@ public class FPSMovement : MonoBehaviour
 
         Vector3 move = transform.right * x + transform.forward * z;
 
-        controller.Move(move * speed * Time.deltaTime);
+        float temp = speed;
+        if (Input.GetKey(KeyCode.LeftShift))
+            speed *= 2;
+
+        Vector3 total = (move * speed * Time.deltaTime);
+        controller.Move(total);
+
+        speed = temp;
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
