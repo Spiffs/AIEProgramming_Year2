@@ -36,7 +36,6 @@ PhysicsScene::~PhysicsScene()
 	{
 		delete pActor;
 	}
-
 	delete m_physicsProjectApp;
 }
 

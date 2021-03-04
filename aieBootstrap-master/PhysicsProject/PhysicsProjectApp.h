@@ -32,7 +32,7 @@ protected:
 	aie::Renderer2D*	m_2dRenderer;
 	aie::Font*			m_font;
 
-	PhysicsScene* m_physicsScene;
+	//PhysicsScene* m_physicsScene;
 	Billiards* m_billiards;
 
 	const float m_aspectRatio = 16.f / 9.f;

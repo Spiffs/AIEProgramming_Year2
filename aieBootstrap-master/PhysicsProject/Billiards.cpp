@@ -6,24 +6,8 @@
 
 Billiards::~Billiards()
 {
-	delete t_ballPlayer;
-	delete t_cuePlayer;
 
-	delete t_ball1;
-	delete t_ball2;
-	delete t_ball3;
-	delete t_ball4;
-	delete t_ball5;
-	delete t_ball6;
-	delete t_ball7;
-	delete t_ball8;
-	delete t_ball9;
-	delete t_ball10;
-	delete t_ball11;
-	delete t_ball12;
-	delete t_ball13;
-	delete t_ball14;
-	delete t_ball15;
+
 }
 
 void Billiards::StartUp()

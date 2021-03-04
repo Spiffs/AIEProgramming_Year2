@@ -18,7 +18,7 @@ PhysicsProjectApp::PhysicsProjectApp()
 
 PhysicsProjectApp::~PhysicsProjectApp()
 {
-
+	
 }
 
 bool PhysicsProjectApp::startup() {
@@ -55,8 +55,6 @@ void PhysicsProjectApp::shutdown() {
 
 	delete m_font;
 	delete m_2dRenderer;
-
-	delete m_billiards;
 }
 
 void PhysicsProjectApp::update(float deltaTime)
@@ -150,89 +148,89 @@ glm::vec2 PhysicsProjectApp::WorldToScreen(glm::vec2 a_worldPos)
 	return screenPos;
 }
 
-void PhysicsProjectApp::DrawRect()
-{
-	m_physicsScene->AddActor(new Sphere(glm::vec2(20, 10), glm::vec2(-10, -17), 1, 3, glm::vec4(1, 0, 0, 1)));
-	m_physicsScene->AddActor(new Plane(glm::vec2(-0.65f, 0.75f), -25));
-
-	Box* box1 = new Box(glm::vec2(-20, 0), glm::vec2(16, -4), 1, 4, 8, 4, glm::vec4(1, 0, 0, 1));
-	box1->SetRotation(0.5f);
-
-	Box* box2 = new Box(glm::vec2(10, 0), glm::vec2(-4, 0), 1, 4, 8, 4, glm::vec4(0, 1, 0, 1));
-
-	m_physicsScene->AddActor(box1);
-	m_physicsScene->AddActor(box2);
-
-	box1->ApplyForce(glm::vec2(30, 0), glm::vec2(0));
-	box2->ApplyForce(glm::vec2(-15, 0), glm::vec2(0));
-
-	Sphere* ball = new Sphere(glm::vec2(5, 10), glm::vec2(0), 1, 3, glm::vec4(0, 0, 1, 1));
-	ball->SetRotation(0.5f);
-	m_physicsScene->AddActor(ball);
-	ball->SetKinematic(true);
-}
-
-void PhysicsProjectApp::SphereAndPlane()
-{
-	Sphere* ball1;
-	ball1 = new Sphere(glm::vec2(-40, 40), glm::vec2(0), 3.0f, 1, glm::vec4(1, 0, 0, 1));
-	m_physicsScene->AddActor(ball1);
-	ball1->ApplyForce(glm::vec2(50, 30), glm::vec2(0));
-
-	Sphere* ball2;
-	ball2 = new Sphere(glm::vec2(40, 40), glm::vec2(0), 3.0f, 1, glm::vec4(0, 1, 0, 1));
-	m_physicsScene->AddActor(ball2);
-	ball2->ApplyForce(glm::vec2(-50, 30), glm::vec2(0));
-
-	Plane* plane = new Plane();
-	m_physicsScene->AddActor(plane);
-}
-
-void PhysicsProjectApp::SpringTest(int a_amount)
-{
-	Sphere* prev = nullptr;
-	for (int i = 0; i < a_amount; i++)
-	{
-		// This will need to spawn the sphere at the bottom of the previous one,
-		// to make a pendulum that is effected by gravity
-		Sphere* sphere = new Sphere(glm::vec2(i * 3, 30 - i * 5), glm::vec2(0), 10, 2, glm::vec4(0, 0, 1, 1));
-
-		if (i == 0)
-		{
-			sphere->SetKinematic(true);
-		}
-
-		m_physicsScene->AddActor(sphere);
-
-		if (prev)
-		{
-			m_physicsScene->AddActor(new Spring(sphere, prev, 10, 500));
-		}
-
-		prev = sphere;
-	}
-
-	Box* box = new Box(glm::vec2(0, -20), glm::vec2(0), 0.3f, 20, 8, 2);
-	box->SetKinematic(true);
-	m_physicsScene->AddActor(box);
-}
-
-void PhysicsProjectApp::TriggerTest()
-{
-	Sphere* ball1 = new Sphere(glm::vec2(10, 20), glm::vec2(0), 4, 4, glm::vec4(1, 0, 0, 1));
-	Sphere* ball2 = new Sphere(glm::vec2(10, -20), glm::vec2(0), 4, 4, glm::vec4(0, 0.5f, 0.5f, 1));
-
-	ball2->SetKinematic(true);
-	ball2->SetTrigger(true);
-
-	m_physicsScene->AddActor(ball1);
-	m_physicsScene->AddActor(ball2);
-	m_physicsScene->AddActor(new Plane(glm::vec2(0, 1), -30));
-	m_physicsScene->AddActor(new Plane(glm::vec2(1, 0), -50));
-	m_physicsScene->AddActor(new Plane(glm::vec2(-1, 0), -50));
-	m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(3, 0), 0.5, 4, 8, 4));
-	m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(3, 0), 0.5, 4, 8, 4));
-
-	//ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
-	//ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
-}
+//void PhysicsProjectApp::DrawRect()
+//{
+//	m_physicsScene->AddActor(new Sphere(glm::vec2(20, 10), glm::vec2(-10, -17), 1, 3, glm::vec4(1, 0, 0, 1)));
+//	m_physicsScene->AddActor(new Plane(glm::vec2(-0.65f, 0.75f), -25));
+//
+//	Box* box1 = new Box(glm::vec2(-20, 0), glm::vec2(16, -4), 1, 4, 8, 4, glm::vec4(1, 0, 0, 1));
+//	box1->SetRotation(0.5f);
+//
+//	Box* box2 = new Box(glm::vec2(10, 0), glm::vec2(-4, 0), 1, 4, 8, 4, glm::vec4(0, 1, 0, 1));
+//
+//	m_physicsScene->AddActor(box1);
+//	m_physicsScene->AddActor(box2);
+//
+//	box1->ApplyForce(glm::vec2(30, 0), glm::vec2(0));
+//	box2->ApplyForce(glm::vec2(-15, 0), glm::vec2(0));
+//
+//	Sphere* ball = new Sphere(glm::vec2(5, 10), glm::vec2(0), 1, 3, glm::vec4(0, 0, 1, 1));
+//	ball->SetRotation(0.5f);
+//	m_physicsScene->AddActor(ball);
+//	ball->SetKinematic(true);
+//}
+//
+//void PhysicsProjectApp::SphereAndPlane()
+//{
+//	Sphere* ball1;
+//	ball1 = new Sphere(glm::vec2(-40, 40), glm::vec2(0), 3.0f, 1, glm::vec4(1, 0, 0, 1));
+//	m_physicsScene->AddActor(ball1);
+//	ball1->ApplyForce(glm::vec2(50, 30), glm::vec2(0));
+//
+//	Sphere* ball2;
+//	ball2 = new Sphere(glm::vec2(40, 40), glm::vec2(0), 3.0f, 1, glm::vec4(0, 1, 0, 1));
+//	m_physicsScene->AddActor(ball2);
+//	ball2->ApplyForce(glm::vec2(-50, 30), glm::vec2(0));
+//
+//	Plane* plane = new Plane();
+//	m_physicsScene->AddActor(plane);
+//}
+//
+//void PhysicsProjectApp::SpringTest(int a_amount)
+//{
+//	Sphere* prev = nullptr;
+//	for (int i = 0; i < a_amount; i++)
+//	{
+//		// This will need to spawn the sphere at the bottom of the previous one,
+//		// to make a pendulum that is effected by gravity
+//		Sphere* sphere = new Sphere(glm::vec2(i * 3, 30 - i * 5), glm::vec2(0), 10, 2, glm::vec4(0, 0, 1, 1));
+//
+//		if (i == 0)
+//		{
+//			sphere->SetKinematic(true);
+//		}
+//
+//		m_physicsScene->AddActor(sphere);
+//
+//		if (prev)
+//		{
+//			m_physicsScene->AddActor(new Spring(sphere, prev, 10, 500));
+//		}
+//
+//		prev = sphere;
+//	}
+//
+//	Box* box = new Box(glm::vec2(0, -20), glm::vec2(0), 0.3f, 20, 8, 2);
+//	box->SetKinematic(true);
+//	m_physicsScene->AddActor(box);
+//}
+//
+//void PhysicsProjectApp::TriggerTest()
+//{
+//	Sphere* ball1 = new Sphere(glm::vec2(10, 20), glm::vec2(0), 4, 4, glm::vec4(1, 0, 0, 1));
+//	Sphere* ball2 = new Sphere(glm::vec2(10, -20), glm::vec2(0), 4, 4, glm::vec4(0, 0.5f, 0.5f, 1));
+//
+//	ball2->SetKinematic(true);
+//	ball2->SetTrigger(true);
+//
+//	m_physicsScene->AddActor(ball1);
+//	m_physicsScene->AddActor(ball2);
+//	m_physicsScene->AddActor(new Plane(glm::vec2(0, 1), -30));
+//	m_physicsScene->AddActor(new Plane(glm::vec2(1, 0), -50));
+//	m_physicsScene->AddActor(new Plane(glm::vec2(-1, 0), -50));
+//	m_physicsScene->AddActor(new Box(glm::vec2(20, 10), glm::vec2(3, 0), 0.5, 4, 8, 4));
+//	m_physicsScene->AddActor(new Box(glm::vec2(-40, 10), glm::vec2(3, 0), 0.5, 4, 8, 4));
+//
+//	//ball2->triggerEnter = [=](PhysicsObject* other) {std::cout << "Entered: " << other << std::endl; };
+//	//ball2->triggerExit = [=](PhysicsObject* other) {std::cout << "Exited: " << other << std::endl; };
+//}
