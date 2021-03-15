@@ -14,6 +14,8 @@ public class FPSMovement : MonoBehaviour
     public float groundCheckRadius = 0.4f;
     public LayerMask groundMask;
 
+    public bool ableToMove = true;
+
     Vector3 velocity;
     bool isGrounded;
 
@@ -32,27 +34,28 @@ public class FPSMovement : MonoBehaviour
             velocity.y = -2f;
         }
 
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        Vector3 move = transform.right * x + transform.forward * z;
-
-        float temp = speed;
-        if (Input.GetKey(KeyCode.LeftShift))
-            speed *= 2;
-
-        Vector3 total = (move * speed * Time.deltaTime);
-        controller.Move(total);
-
-        speed = temp;
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (ableToMove)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
+            float x = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical");
 
+            Vector3 move = transform.right * x + transform.forward * z;
+
+            float temp = speed;
+            if (Input.GetKey(KeyCode.LeftShift))
+                speed *= 2;
+
+            Vector3 total = (move * speed * Time.deltaTime);
+            controller.Move(total);
+
+            speed = temp;
+
+            if (Input.GetButtonDown("Jump") && isGrounded)
+            {
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            }
+        }
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-
     }
 }

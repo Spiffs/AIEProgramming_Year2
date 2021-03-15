@@ -7,12 +7,20 @@ public class Shooting : MonoBehaviour
 {
     public Camera fpsCamera;
     public ParticleSystem muzzleFlash;
+    
+    private AudioSource gunFire;
+
+    private void Start()
+    {
+        gunFire = GetComponent<AudioSource>();
+    }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetButtonDown("Fire1"))
         {
+            gunFire.Play(0);
             Shoot();
         }
     }

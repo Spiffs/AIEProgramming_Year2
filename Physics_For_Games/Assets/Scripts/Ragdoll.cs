@@ -14,6 +14,7 @@ public class Ragdoll : MonoBehaviour
         get { return !animator.enabled; }
         set
         {
+            GetComponent<CapsuleCollider>().isTrigger = true;
             animator.enabled = !value;
             foreach(Rigidbody r in rigidbodies)
             {
@@ -26,16 +27,11 @@ public class Ragdoll : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GetComponent<CapsuleCollider>().isTrigger = false;
         animator = GetComponent<Animator>();
         foreach(Rigidbody r in rigidbodies)
         {
             r.isKinematic = true;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
