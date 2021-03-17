@@ -9815,7 +9815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8b8708e372d33449a3a061440185536, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 400
+  mouseSensitivity: 30
   playerBody: {fileID: 1343771292}
   ableToMove: 1
 --- !u!1 &742134732 stripped
