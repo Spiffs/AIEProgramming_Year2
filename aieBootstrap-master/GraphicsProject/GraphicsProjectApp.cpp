@@ -259,29 +259,29 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 
 #pragma endregion
 
-#pragma region GamingSetupLogic
+#pragma region GrenadeLogic
 
 	// loading the fragment and vertex shaders
-	m_gamingSetupShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
-	m_gamingSetupShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
-	if (!m_gamingSetupShader.link())
+	m_grenadeShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
+	m_grenadeShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
+	if (!m_grenadeShader.link())
 	{
-		printf("GamerSetup Shader had an error: %s\n", m_gamingSetupShader.getLastError());
+		printf("Grenade Shader had an error: %s\n", m_grenadeShader.getLastError());
 		return false;
 	}
 
 	// object
-	if (m_gamingSetupMesh.load("./stanford/Gaming Setup/Gamer_Setup.obj", true, true) == false)
+	if (m_grenadeMesh.load("./stanford/Grenade/Hand_Grenade.obj", true, true) == false)
 	{
-		printf("GamerSetup Mesh Failed!\n");
+		printf("Grenade Mesh Failed!\n");
 		return false;
 	}
 
-	m_gamingSetupTransform = {
-		0.5f,     0,     0,  0,
-		   0,  0.5f,     0,  0,
-		   0,     0,  0.5f,  0,
-		   -7,     0,     0,  1
+	m_grenadeTransform = {
+		10,     0,     0,   0,
+		 0,    10,     0,   0,
+		   0,     0,  10,   0,
+		   -7,    0,  -7,   1
 	};
 
 #pragma endregion
@@ -410,21 +410,18 @@ void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::
 
 #pragma endregion
 
-#pragma region GamingSetup
-
-	// Bind the shader
-	m_normalMapShader.bind();
+#pragma region Grenade
 
 	// Bind the transform of the mesh
-	pvm = a_projectionMatrix * a_viewMatrix * m_gamingSetupTransform;
+	pvm = a_projectionMatrix * a_viewMatrix * m_grenadeTransform;
 	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
 	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
 	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
 	m_normalMapShader.bindUniform("LightColor", m_light.color);
 	m_normalMapShader.bindUniform("LightDirection", m_light.direciton);
-	m_normalMapShader.bindUniform("ModelMatrix", m_gamingSetupTransform);
+	m_normalMapShader.bindUniform("ModelMatrix", m_grenadeTransform);
 
-	m_gamingSetupMesh.draw();
+	m_grenadeMesh.draw();
 
 #pragma endregion
 

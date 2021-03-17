@@ -38,7 +38,7 @@ protected:
 	aie::ShaderProgram m_buddhaShader;
 	aie::ShaderProgram m_lucyShader;
 	aie::ShaderProgram m_soulspearShader;
-	aie::ShaderProgram m_gamingSetupShader;
+	aie::ShaderProgram m_grenadeShader;
 	aie::ShaderProgram m_phongShader;
 	aie::ShaderProgram m_textureShader;
 	aie::ShaderProgram m_normalMapShader;
@@ -62,8 +62,8 @@ protected:
 	aie::OBJMesh m_soulspearMesh;
 	glm::mat4 m_soulspearTransform;
 	// Create a dingding with a flat color
-	aie::OBJMesh m_gamingSetupMesh;
-	glm::mat4 m_gamingSetupTransform;
+	aie::OBJMesh m_grenadeMesh;
+	glm::mat4 m_grenadeTransform;
 
 	struct Light
 	{
