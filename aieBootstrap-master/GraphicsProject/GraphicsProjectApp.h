@@ -5,6 +5,9 @@
 #include "Camera.h"
 #include "Shader.h"
 #include "OBJMesh.h"
+#include "Scene.h"
+#include "Instance.h"
+
 #include <glm/mat4x4.hpp>
 
 class GraphicsProjectApp : public aie::Application {
@@ -65,17 +68,19 @@ protected:
 	aie::OBJMesh m_grenadeMesh;
 	glm::mat4 m_grenadeTransform;
 
-	struct Light
+	Scene* m_scene;
+
+	/*struct Light
 	{
 		glm::vec3 direciton;
 		glm::vec3 color; 
 	};
 
 	Light m_light;
-	glm::vec3 m_ambientLight;
+	glm::vec3 m_ambientLight;*/
 
 public:
-	bool LoadShaderAndMeshLogic();
-	void DrawShaderAndMeshes(glm::mat4, glm::mat4);
+	bool LoadShaderAndMeshLogic(Light a_light);
+	//void DrawShaderAndMeshes(glm::mat4, glm::mat4);
 	void IMGUI_Logic();
 };

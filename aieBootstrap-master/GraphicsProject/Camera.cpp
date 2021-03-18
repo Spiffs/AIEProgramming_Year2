@@ -68,7 +68,7 @@ glm::mat4 Camera::GetViewMatrix()
 	return glm::lookAt(m_position, m_position + forward, glm::vec3(0, 1, 0));
 }
 
-glm::mat4 Camera::GetProjectionMatric(float a_width, float a_height)
+glm::mat4 Camera::GetProjectionMatrix(float a_width, float a_height)
 {
 	return glm::perspective(glm::pi<float>() * 0.25f, a_width / a_height, 0.1f, 1000.0f);
 }

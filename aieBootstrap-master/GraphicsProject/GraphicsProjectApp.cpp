@@ -38,15 +38,18 @@ bool GraphicsProjectApp::startup()
 	m_viewMatrix = glm::lookAt(glm::vec3(10), glm::vec3(0), glm::vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
-	m_light.color = { 1, 1, 1 };
-	m_ambientLight = { 0.25f, 0.25f, 0.25f };
 
-	return LoadShaderAndMeshLogic();
+	Light light;
+	light.m_color = { 1, 1, 1 };
+	light.m_direction = { 1, -1, 1 };
+
+	return LoadShaderAndMeshLogic(light);
 }
 
 void GraphicsProjectApp::shutdown()
 {
 	Gizmos::destroy();
+	delete m_scene;
 }
 
 void GraphicsProjectApp::update(float deltaTime)
@@ -76,7 +79,7 @@ void GraphicsProjectApp::update(float deltaTime)
 
 	float time = getTime();
 
-	m_light.direciton = glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
+	m_scene->GetLight().m_direction = glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
@@ -90,13 +93,15 @@ void GraphicsProjectApp::draw()
 	// wipe the screen to the background colour
 	clearScreen();
 
-	glm::mat4 projectionMatrix = m_camera.GetProjectionMatric(getWindowWidth(), (float)getWindowHeight());
+	glm::mat4 projectionMatrix = m_camera.GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
 	glm::mat4 viewMatrix = m_camera.GetViewMatrix();
 
 	// update perspective based on screen size
 	// m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
-	DrawShaderAndMeshes(projectionMatrix, viewMatrix);
+	//DrawShaderAndMeshes(projectionMatrix, viewMatrix);
+
+	m_scene->Draw();
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
 }
@@ -111,7 +116,7 @@ void GraphicsProjectApp::SolarSystem(float dt)
 	Gizmos::addSphere(glm::vec3(2, 0, 0), 0.15f, 16, 16, glm::vec4(1, 0.8, 0, 1));
 }
 
-bool GraphicsProjectApp::LoadShaderAndMeshLogic()
+bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 {
 #pragma region Quad
 	// Load the vertex shader from a file
@@ -366,177 +371,184 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic()
 	};
 #pragma endregion
 
+	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
+
+	for (int i = 0; i < 10; i++)
+	{
+		m_scene->AddInstance(new Instance(glm::vec3(i * 2, 0, 0), glm::vec3(0, i * 30, 0), glm::vec3(1, 1, 1), &m_soulspearMesh, &m_normalMapShader));
+	}
+
 	return true;
 }
 
-void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::mat4 a_viewMatrix)
-{
-	// PVM = Projection View Matrix
-	auto pvm = a_projectionMatrix * a_viewMatrix * glm::mat4(0);
-
-#pragma region Quad
-	// Bind the shader
-	m_textureShader.bind();
-
-	// Bind the transform of the mesh
-	pvm = a_projectionMatrix * a_viewMatrix * m_quadTransform;
-	m_textureShader.bindUniform("ProjectionViewModel", pvm);
-	
-	// Bind the texture to a location of your choice(0)
-	m_textureShader.bindUniform("diffuseTexture", 0);
-
-	// Bind the texture tp the specified location
-	m_gridTexture.bind(0);
-
-	m_quadMesh.Draw();
-
-#pragma endregion
-
-#pragma region Soulspear
-
-	// Bind the shader
-	m_normalMapShader.bind();
-
-	// Bind the transform of the mesh
-	pvm = a_projectionMatrix * a_viewMatrix * m_soulspearTransform;
-	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
-	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
-	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
-	m_normalMapShader.bindUniform("LightColor", m_light.color);
-	m_normalMapShader.bindUniform("LightDirection", m_light.direciton);
-	m_normalMapShader.bindUniform("ModelMatrix", m_soulspearTransform);
-
-	m_soulspearMesh.draw();
-
-#pragma endregion
-
-#pragma region Grenade
-
-	// Bind the transform of the mesh
-	pvm = a_projectionMatrix * a_viewMatrix * m_grenadeTransform;
-	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
-	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
-	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
-	m_normalMapShader.bindUniform("LightColor", m_light.color);
-	m_normalMapShader.bindUniform("LightDirection", m_light.direciton);
-	m_normalMapShader.bindUniform("ModelMatrix", m_grenadeTransform);
-
-	m_grenadeMesh.draw();
-
-#pragma endregion
-
-#pragma region FlatBunny
-	m_bunnyShader.bind();
-	pvm = a_projectionMatrix * a_viewMatrix * m_bunnyTransform;
-	m_bunnyShader.bindUniform("ProjectionViewModel", pvm);
-	m_bunnyShader.bindUniform("MeshFlatColor", glm::vec4(0, 1, 0, 1));
-
-	// Draw bunny mesh
-	//m_bunnyMesh.draw();
-
-#pragma endregion
-
-#pragma region PhongDragon
-
-	// Bind the shader
-	m_phongShader.bind();
-
-	// Bind the camera position 
-	m_phongShader.bindUniform("CameraPosition", vec3(glm::inverse(m_viewMatrix)[3]));
-
-	// Bind the light 
-	m_phongShader.bindUniform("AmbientColor", m_ambientLight);
-	m_phongShader.bindUniform("LightDirection", m_light.direciton);
-	m_phongShader.bindUniform("LightColor", m_light.color);
-
-	// Bind the pvm
-	pvm = a_projectionMatrix * a_viewMatrix * m_dragonTransform;
-	m_phongShader.bindUniform("ProjectionViewModel", pvm);
-
-	// Bing the lighting transform
-	m_phongShader.bindUniform("ModelMatrix", m_dragonTransform);
-
-	// Draw mesh
-	m_dragonMesh.draw();
-#pragma endregion
-
-#pragma region PhongBunny
-
-	// Bind the shader
-	m_phongShader.bind();
-
-	// Bind the camera position 
-	m_phongShader.bindUniform("CameraPosition", vec3(glm::inverse(m_viewMatrix)[3]));
-
-	// Bind the light 
-	m_phongShader.bindUniform("AmbientColor", m_ambientLight);
-	m_phongShader.bindUniform("LightDirection", m_light.direciton);
-	m_phongShader.bindUniform("LightColor", m_light.color);
-
-	// Bind the pvm
-	pvm = a_projectionMatrix * a_viewMatrix * m_bunnyTransform;
-	m_phongShader.bindUniform("ProjectionViewModel", pvm);
-
-	// Bing the lighting transform
-	m_phongShader.bindUniform("ModelMatrix", m_bunnyTransform);
-
-	// Draw mesh
-	m_bunnyMesh.draw();
-#pragma endregion
-
-#pragma region PhongBuddha
-
-	// Bind the shader
-	m_phongShader.bind();
-
-	// Bind the camera position 
-	m_phongShader.bindUniform("CameraPosition", vec3(glm::inverse(m_viewMatrix)[3]));
-
-	// Bind the light 
-	m_phongShader.bindUniform("AmbientColor", m_ambientLight);
-	m_phongShader.bindUniform("LightDirection", m_light.direciton);
-	m_phongShader.bindUniform("LightColor", m_light.color);
-
-	// Bind the pvm
-	pvm = a_projectionMatrix * a_viewMatrix * m_buddhaTransform;
-	m_phongShader.bindUniform("ProjectionViewModel", pvm);
-
-	// Bing the lighting transform
-	m_phongShader.bindUniform("ModelMatrix", m_buddhaTransform);
-
-	// Draw mesh
-	m_buddhaMesh.draw();
-#pragma endregion
-
-#pragma region PhongLucy
-
-	// Bind the shader
-	m_phongShader.bind();
-
-	// Bind the camera position 
-	m_phongShader.bindUniform("CameraPosition", vec3(glm::inverse(m_viewMatrix)[3]));
-
-	// Bind the light 
-	m_phongShader.bindUniform("AmbientColor", m_ambientLight);
-	m_phongShader.bindUniform("LightDirection", m_light.direciton);
-	m_phongShader.bindUniform("LightColor", m_light.color);
-
-	// Bind the pvm
-	pvm = a_projectionMatrix * a_viewMatrix * m_lucyTransform;
-	m_phongShader.bindUniform("ProjectionViewModel", pvm);
-
-	// Bing the lighting transform
-	m_phongShader.bindUniform("ModelMatrix", m_lucyTransform);
-
-	// Draw mesh
-	m_lucyMesh.draw();
-#pragma endregion
-}
+//void GraphicsProjectApp::DrawShaderAndMeshes(glm::mat4 a_projectionMatrix, glm::mat4 a_viewMatrix)
+//{
+//	// PVM = Projection View Matrix
+//	auto pvm = a_projectionMatrix * a_viewMatrix * glm::mat4(0);
+//
+//#pragma region Quad
+//	// Bind the shader
+//	m_textureShader.bind();
+//
+//	// Bind the transform of the mesh
+//	pvm = a_projectionMatrix * a_viewMatrix * m_quadTransform;
+//	m_textureShader.bindUniform("ProjectionViewModel", pvm);
+//	
+//	// Bind the texture to a location of your choice(0)
+//	m_textureShader.bindUniform("diffuseTexture", 0);
+//
+//	// Bind the texture tp the specified location
+//	m_gridTexture.bind(0);
+//
+//	m_quadMesh.Draw();
+//
+//#pragma endregion
+//
+//#pragma region Soulspear
+//
+//	// Bind the shader
+//	m_normalMapShader.bind();
+//
+//	// Bind the transform of the mesh
+//	pvm = a_projectionMatrix * a_viewMatrix * m_soulspearTransform;
+//	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
+//	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
+//	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
+//	m_normalMapShader.bindUniform("LightColor", m_light.color);
+//	m_normalMapShader.bindUniform("LightDirection", m_light.direciton);
+//	m_normalMapShader.bindUniform("ModelMatrix", m_soulspearTransform);
+//
+//	m_soulspearMesh.draw();
+//
+//#pragma endregion
+//
+//#pragma region Grenade
+//
+//	// Bind the transform of the mesh
+//	pvm = a_projectionMatrix * a_viewMatrix * m_grenadeTransform;
+//	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
+//	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
+//	m_normalMapShader.bindUniform("AmbientColor", m_ambientLight);
+//	m_normalMapShader.bindUniform("LightColor", m_light.color);
+//	m_normalMapShader.bindUniform("LightDirection", m_light.direciton);
+//	m_normalMapShader.bindUniform("ModelMatrix", m_grenadeTransform);
+//
+//	m_grenadeMesh.draw();
+//
+//#pragma endregion
+//
+//#pragma region FlatBunny
+//	m_bunnyShader.bind();
+//	pvm = a_projectionMatrix * a_viewMatrix * m_bunnyTransform;
+//	m_bunnyShader.bindUniform("ProjectionViewModel", pvm);
+//	m_bunnyShader.bindUniform("MeshFlatColor", glm::vec4(0, 1, 0, 1));
+//
+//	// Draw bunny mesh
+//	//m_bunnyMesh.draw();
+//
+//#pragma endregion
+//
+//#pragma region PhongDragon
+//
+//	// Bind the shader
+//	m_phongShader.bind();
+//
+//	// Bind the camera position 
+//	m_phongShader.bindUniform("CameraPosition", vec3(glm::inverse(m_viewMatrix)[3]));
+//
+//	// Bind the light 
+//	m_phongShader.bindUniform("AmbientColor", m_ambientLight);
+//	m_phongShader.bindUniform("LightDirection", m_light.direciton);
+//	m_phongShader.bindUniform("LightColor", m_light.color);
+//
+//	// Bind the pvm
+//	pvm = a_projectionMatrix * a_viewMatrix * m_dragonTransform;
+//	m_phongShader.bindUniform("ProjectionViewModel", pvm);
+//
+//	// Bing the lighting transform
+//	m_phongShader.bindUniform("ModelMatrix", m_dragonTransform);
+//
+//	// Draw mesh
+//	m_dragonMesh.draw();
+//#pragma endregion
+//
+//#pragma region PhongBunny
+//
+//	// Bind the shader
+//	m_phongShader.bind();
+//
+//	// Bind the camera position 
+//	m_phongShader.bindUniform("CameraPosition", vec3(glm::inverse(m_viewMatrix)[3]));
+//
+//	// Bind the light 
+//	m_phongShader.bindUniform("AmbientColor", m_ambientLight);
+//	m_phongShader.bindUniform("LightDirection", m_light.direciton);
+//	m_phongShader.bindUniform("LightColor", m_light.color);
+//
+//	// Bind the pvm
+//	pvm = a_projectionMatrix * a_viewMatrix * m_bunnyTransform;
+//	m_phongShader.bindUniform("ProjectionViewModel", pvm);
+//
+//	// Bing the lighting transform
+//	m_phongShader.bindUniform("ModelMatrix", m_bunnyTransform);
+//
+//	// Draw mesh
+//	m_bunnyMesh.draw();
+//#pragma endregion
+//
+//#pragma region PhongBuddha
+//
+//	// Bind the shader
+//	m_phongShader.bind();
+//
+//	// Bind the camera position 
+//	m_phongShader.bindUniform("CameraPosition", vec3(glm::inverse(m_viewMatrix)[3]));
+//
+//	// Bind the light 
+//	m_phongShader.bindUniform("AmbientColor", m_ambientLight);
+//	m_phongShader.bindUniform("LightDirection", m_light.direciton);
+//	m_phongShader.bindUniform("LightColor", m_light.color);
+//
+//	// Bind the pvm
+//	pvm = a_projectionMatrix * a_viewMatrix * m_buddhaTransform;
+//	m_phongShader.bindUniform("ProjectionViewModel", pvm);
+//
+//	// Bing the lighting transform
+//	m_phongShader.bindUniform("ModelMatrix", m_buddhaTransform);
+//
+//	// Draw mesh
+//	m_buddhaMesh.draw();
+//#pragma endregion
+//
+//#pragma region PhongLucy
+//
+//	// Bind the shader
+//	m_phongShader.bind();
+//
+//	// Bind the camera position 
+//	m_phongShader.bindUniform("CameraPosition", vec3(glm::inverse(m_viewMatrix)[3]));
+//
+//	// Bind the light 
+//	m_phongShader.bindUniform("AmbientColor", m_ambientLight);
+//	m_phongShader.bindUniform("LightDirection", m_light.direciton);
+//	m_phongShader.bindUniform("LightColor", m_light.color);
+//
+//	// Bind the pvm
+//	pvm = a_projectionMatrix * a_viewMatrix * m_lucyTransform;
+//	m_phongShader.bindUniform("ProjectionViewModel", pvm);
+//
+//	// Bing the lighting transform
+//	m_phongShader.bindUniform("ModelMatrix", m_lucyTransform);
+//
+//	// Draw mesh
+//	m_lucyMesh.draw();
+//#pragma endregion
+//}
 
 void GraphicsProjectApp::IMGUI_Logic()
 {
 	ImGui::Begin("Scene Light Settings");
-	ImGui::DragFloat3("Sunlight Direction", &m_light.direciton[0], 0.1f, -1.0f, 1.0f);
-	ImGui::DragFloat3("Sunlight Color", &m_light.color[0], 0.1f, 0.0f, 2.0f);
+	ImGui::DragFloat3("Sunlight Direction", &m_scene->GetLight().m_direction[0], 0.1f, -1.0f, 1.0f);
+	ImGui::DragFloat3("Sunlight Color", &m_scene->GetLight().m_color[0], 0.1f, 0.0f, 2.0f);
 	ImGui::End();
 }

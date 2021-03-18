@@ -11,7 +11,7 @@ public:
 	glm::vec3 GetPosition() { return m_position; }
 
 	glm::mat4 GetViewMatrix();
-	glm::mat4 GetProjectionMatric(float a_width, float a_height);
+	glm::mat4 GetProjectionMatrix(float a_width, float a_height);
 
 private:
 	float m_theta;	// In degrees
