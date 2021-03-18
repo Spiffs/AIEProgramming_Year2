@@ -79,7 +79,8 @@ void GraphicsProjectApp::update(float deltaTime)
 
 	float time = getTime();
 
-	m_scene->GetLight().m_direction = glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0));
+	m_scene->SetLightDirection(glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0)));
+
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
@@ -165,10 +166,10 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 #pragma endregion
 
 #pragma region FlatBunny
-	m_bunnyShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
-
+	// Load the vertex shader from a file
+	m_bunnyShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
 	// Load the fragment shader from a file
-	m_bunnyShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
+	m_bunnyShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
 
 	if (!m_bunnyShader.link())
 	{
@@ -186,7 +187,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 		0.5f,     0,     0,  0,
 		   0,  0.5f,     0,  0,
 		   0,     0,  0.5f,  0,
-		   0,     0,     0,  1
+		  -5,     0,     0,  1
 	};
 
 #pragma endregion
@@ -259,7 +260,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 		0.5f,     0,     0,  0,
 		   0,  0.5f,     0,  0,
 		   0,     0,  0.5f,  0,
-		   -7,     0,     0,  1
+	      -7,     0,     0,  1
 	};
 
 #pragma endregion
@@ -267,8 +268,8 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 #pragma region GrenadeLogic
 
 	// loading the fragment and vertex shaders
-	m_grenadeShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
-	m_grenadeShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
+	m_grenadeShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/normalMap.vert");
+	m_grenadeShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/normalMap.frag");
 	if (!m_grenadeShader.link())
 	{
 		printf("Grenade Shader had an error: %s\n", m_grenadeShader.getLastError());
@@ -283,10 +284,10 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	}
 
 	m_grenadeTransform = {
-		10,     0,     0,   0,
-		 0,    10,     0,   0,
-		   0,     0,  10,   0,
-		   -7,    0,  -7,   1
+		25,     0,     0,   0,
+		 0,    25,     0,   0,
+		 0,     0,    25,   0,
+         0,     0,    -5,   1
 	};
 
 #pragma endregion
@@ -371,12 +372,25 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	};
 #pragma endregion
 
-	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
 
+	// creating SoulSpears
+	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
+	 
 	for (int i = 0; i < 10; i++)
 	{
 		m_scene->AddInstance(new Instance(glm::vec3(i * 2, 0, 0), glm::vec3(0, i * 30, 0), glm::vec3(1, 1, 1), &m_soulspearMesh, &m_normalMapShader));
 	}
+	
+	// creating a granade
+	m_scene->AddInstance(new Instance(m_grenadeTransform, &m_grenadeMesh, &m_normalMapShader));
+
+	m_scene->AddInstance(new Instance(m_bunnyTransform, &m_bunnyMesh, &m_bunnyShader));
+
+	// creating lights
+	// creating a red light
+	m_scene->GetPointLights().push_back(Light(vec3(5, 3, 0), vec3(1, 0, 0), 50));
+	// creating a green light
+	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(0, 1, 0), 50));
 
 	return true;
 }

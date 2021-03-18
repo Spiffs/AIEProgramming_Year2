@@ -3,6 +3,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+const static int MAX_LIGHTS = 4;
+
 class Camera;
 class Instance;
 
@@ -40,15 +42,27 @@ public:
 
 	Light GetLight() { return m_light; }
 	void SetLight(Light a_light) { m_light = a_light; }
+	void SetLightDirection(glm::vec3 a_direction) { m_light.m_direction = a_direction; }
 
 	glm::vec3 GetAmbientLight() { return m_ambientLight; }
 	void SetAmbientLight(glm::vec3 a_ambientLight) { m_ambientLight = a_ambientLight; }
+
+	int GetNumLights() { return (int)m_pointLights.size(); }
+	glm::vec3* GetPointLightPositions() { return &m_pointLightPositions[0]; }
+	glm::vec3* GetPointLightColor() { return &m_pointLightColors[0]; }
+
+	std::vector<Light>& GetPointLights() { return m_pointLights; }
 
 protected:
 	Camera* m_camera;
 	glm::vec2 m_windowSize;
 	Light m_light;
+	Light m_sunLight;
+	std::vector<Light> m_pointLights;
 	glm::vec3 m_ambientLight;
 	std::list<Instance*> m_instances;
+
+	glm::vec3 m_pointLightPositions[MAX_LIGHTS];
+	glm::vec3 m_pointLightColors[MAX_LIGHTS];
 };
 

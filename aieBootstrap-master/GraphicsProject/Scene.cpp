@@ -21,6 +21,12 @@ void Scene::AddInstance(Instance* a_instance)
 
 void Scene::Draw()
 {
+	for  (int i = 0; i < MAX_LIGHTS && i; i++)
+	{
+		m_pointLightPositions[i] = m_pointLights[i].m_direction;
+		m_pointLightColors[i] = m_pointLights[i].m_color;
+	}
+
 	for (auto i = m_instances.begin(); i != m_instances.end(); i++)
 	{
 		Instance* instance = *i;
