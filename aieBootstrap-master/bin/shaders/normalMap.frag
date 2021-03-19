@@ -1,4 +1,4 @@
-// Phong shader for simple hame lighting
+// Normal Map shader for texture shading
 #version 410
 
 in vec4 vPosition;
@@ -16,7 +16,7 @@ uniform vec3 Kd; // The diffuse color of the model's material
 uniform vec3 Ks; // The specular color of the model's material
 uniform float Ns; // The specular power of the model's material
 
-uniform vec3 AmbientColor; // A<noemt color of the light
+uniform vec3 AmbientColor; // Ambient color of the light
 uniform vec3 LightColor; // Color of the light 
 uniform vec3 LightDirection; 
 
@@ -93,7 +93,7 @@ void main()
     vec3 specular = Ks * textSpecular * specularTotal;
 
     // Show the standatd normals
-    FragColor = vec4(N, 1);
+    //FragColor = vec4(N, 1);
 
     // 
     //FragColor = vec4(textNormal, 1);

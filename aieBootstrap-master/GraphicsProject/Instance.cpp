@@ -31,7 +31,6 @@ Instance::Instance(glm::vec3 a_position, aie::OBJMesh* a_mesh, aie::ShaderProgra
 void Instance::Draw(Scene* a_scene)
 {
 #pragma region NewInstance
-
 	// Bind the shader
 	m_shader->bind();
 
@@ -46,9 +45,9 @@ void Instance::Draw(Scene* a_scene)
 	m_shader->bindUniform("ModelMatrix", m_transform);
 
 	int numLights = a_scene->GetNumLights();
-	m_shader->bindUniform("numLights", numLights);
-	m_shader->bindUniform("PointLightPosition", numLights, a_scene->GetPointLightPositions());
+	m_shader->bindUniform("numLights", numLights);	
 	m_shader->bindUniform("PointLightColor", numLights, a_scene->GetPointLightColor());
+	m_shader->bindUniform("PointLightPosition", numLights, a_scene->GetPointLightPositions());
 
 	// draw the objects mesh
 	m_mesh->draw();

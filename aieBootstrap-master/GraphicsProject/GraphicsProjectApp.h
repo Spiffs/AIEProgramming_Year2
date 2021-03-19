@@ -43,7 +43,6 @@ protected:
 	aie::ShaderProgram m_soulspearShader;
 	aie::ShaderProgram m_grenadeShader;
 	aie::ShaderProgram m_phongShader;
-	aie::ShaderProgram m_textureShader;
 	aie::ShaderProgram m_normalMapShader;
 	// --------------
 	// Basic Plane
