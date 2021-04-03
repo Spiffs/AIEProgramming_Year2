@@ -30,7 +30,8 @@ public:
 protected:
 
 	aie::Renderer2D*	m_2dRenderer;
-	aie::Font*			m_font;
+	aie::Font*			m_escapeFont;
+	aie::Font*			m_fpsFont;
 
 	//PhysicsScene* m_physicsScene;
 	Billiards* m_billiards;

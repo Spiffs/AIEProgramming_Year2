@@ -6,13 +6,14 @@
 
 Billiards::~Billiards()
 {
-
-
+	delete m_font;
 }
 
 void Billiards::StartUp()
 {
 #pragma region POINTER DEFINITIONS
+
+	m_font = new aie::Font("../bin/font/SuperLegendBoy.ttf", 20);
 
 	// play area
 	m_backdrop = new Box(glm::vec2(0), glm::vec2(0), 0, 1000, 110, 60, glm::vec4(0, .5f, 0, 1));
@@ -21,6 +22,7 @@ void Billiards::StartUp()
 	m_rightBorder = new Box(glm::vec2(98, 0), glm::vec2(0), 0, 1000, 15, 55, glm::vec4(.4f, .2f, 0, 1));
 	m_leftBorder = new Box(glm::vec2(-98, 0), glm::vec2(0), 0, 1000, 15, 55, glm::vec4(.4f, .2f, 0, 1));
 
+	// hole boxes for asthetics
 	m_linerTopLeft = new Box(glm::vec2(-85, 38), glm::vec2(0), 0, 1000, 3, 3, glm::vec4(0.2f, 0.1f, 0, 1));
 	m_linerTopMiddle = new Box(glm::vec2(0, 38), glm::vec2(0), 0, 1000, 6, 3, glm::vec4(0.2f, 0.1f, 0, 1));
 	m_linerTopRight = new Box(glm::vec2(85, 38), glm::vec2(0), 0, 1000, 3, 3, glm::vec4(0.2f, 0.1f, 0, 1));
@@ -41,30 +43,56 @@ void Billiards::StartUp()
 	m_ballPlayer = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 3, m_radius, WHITE);
 
 	// solid balls
-	m_ball1 = new Sphere(glm::vec2(30, 0), glm::vec2(0), 2, m_radius, YELLOW);
-	m_ball2 = new Sphere(glm::vec2(35, -3), glm::vec2(0), 2, m_radius, BLUE);
-	m_ball3 = new Sphere(glm::vec2(40, -6), glm::vec2(0), 2, m_radius, RED);
-	m_ball4 = new Sphere(glm::vec2(45, 3), glm::vec2(0), 2, m_radius, PURPLE);
-	m_ball5 = new Sphere(glm::vec2(45, -9), glm::vec2(0), 2, m_radius, ORANGE);
-	m_ball6 = new Sphere(glm::vec2(50, 6), glm::vec2(0), 2, m_radius, GREEN);
-	m_ball7 = new Sphere(glm::vec2(50, -6), glm::vec2(0), 2, m_radius, BROWN);
+	m_ball1 = new Sphere(glm::vec2(30, 0), glm::vec2(0), 2, m_radius, YELLOW, Solid);
+	m_ball2 = new Sphere(glm::vec2(35, -3), glm::vec2(0), 2, m_radius, BLUE, Solid);
+	m_ball3 = new Sphere(glm::vec2(40, -6), glm::vec2(0), 2, m_radius, RED, Solid);
+	m_ball4 = new Sphere(glm::vec2(45, 3), glm::vec2(0), 2, m_radius, PURPLE, Solid);
+	m_ball5 = new Sphere(glm::vec2(45, -9), glm::vec2(0), 2, m_radius, ORANGE, Solid);
+	m_ball6 = new Sphere(glm::vec2(50, 6), glm::vec2(0), 2, m_radius, GREEN, Solid);
+	m_ball7 = new Sphere(glm::vec2(50, -6), glm::vec2(0), 2, m_radius, BROWN, Solid);
 
 	// 8 ball
 	m_ball8 = new Sphere(glm::vec2(40, 0), glm::vec2(0), 2, m_radius, BLACK);
 
 	// stripped balls
-	m_ball9 = new Sphere(glm::vec2(35, 3), glm::vec2(0), 2, m_radius, YELLOW);
-	m_ball10 = new Sphere(glm::vec2(40, 6), glm::vec2(0), 2, m_radius, BLUE);
-	m_ball11 = new Sphere(glm::vec2(45, 9), glm::vec2(0), 2, m_radius, RED);
-	m_ball12 = new Sphere(glm::vec2(45, -3), glm::vec2(0), 2, m_radius, PURPLE);
-	m_ball13 = new Sphere(glm::vec2(50, 12), glm::vec2(0), 2, m_radius, ORANGE);
-	m_ball14 = new Sphere(glm::vec2(50, 0), glm::vec2(0), 2, m_radius, GREEN);
-	m_ball15 = new Sphere(glm::vec2(50, -12), glm::vec2(0), 2, m_radius, BROWN);
+	m_ball9 = new Sphere(glm::vec2(35, 3), glm::vec2(0), 2, m_radius, YELLOW, Stripped);
+	m_ball10 = new Sphere(glm::vec2(40, 6), glm::vec2(0), 2, m_radius, BLUE, Stripped);
+	m_ball11 = new Sphere(glm::vec2(45, 9), glm::vec2(0), 2, m_radius, RED, Stripped);
+	m_ball12 = new Sphere(glm::vec2(45, -3), glm::vec2(0), 2, m_radius, PURPLE, Stripped);
+	m_ball13 = new Sphere(glm::vec2(50, 12), glm::vec2(0), 2, m_radius, ORANGE, Stripped);
+	m_ball14 = new Sphere(glm::vec2(50, 0), glm::vec2(0), 2, m_radius, GREEN, Stripped);
+	m_ball15 = new Sphere(glm::vec2(50, -12), glm::vec2(0), 2, m_radius, BROWN, Stripped);
 
+	// textures
+
+	// players
+	t_ballPlayer = new aie::Texture("textures/Billiards/ballwhite.png");
+	t_cuePlayer = new aie::Texture("textures/Billiards/poolcue.png");
+
+	// full balls
+	t_ball1 = new aie::Texture("textures/Billiards/ball1.png"); m_textures.push_back(t_ball1);
+	t_ball2 = new aie::Texture("textures/Billiards/ball2.png"); m_textures.push_back(t_ball2);
+	t_ball3 = new aie::Texture("textures/Billiards/ball3.png"); m_textures.push_back(t_ball3);
+	t_ball4 = new aie::Texture("textures/Billiards/ball4.png"); m_textures.push_back(t_ball4);
+	t_ball5 = new aie::Texture("textures/Billiards/ball5.png"); m_textures.push_back(t_ball5);
+	t_ball6 = new aie::Texture("textures/Billiards/ball6.png"); m_textures.push_back(t_ball6);
+	t_ball7 = new aie::Texture("textures/Billiards/ball7.png"); m_textures.push_back(t_ball7);
+
+	// 8 ball		
+	t_ball8 = new aie::Texture("textures/Billiards/ball8.png"); m_textures.push_back(t_ball9);
+
+	// stripped balls
+	t_ball9 = new aie::Texture("textures/Billiards/ball9.png");	 m_textures.push_back(t_ball9);
+	t_ball10 = new aie::Texture("textures/Billiards/ball10.png"); m_textures.push_back(t_ball10);
+	t_ball11 = new aie::Texture("textures/Billiards/ball11.png"); m_textures.push_back(t_ball11);
+	t_ball12 = new aie::Texture("textures/Billiards/ball12.png"); m_textures.push_back(t_ball12);
+	t_ball13 = new aie::Texture("textures/Billiards/ball13.png"); m_textures.push_back(t_ball13);
+	t_ball14 = new aie::Texture("textures/Billiards/ball14.png"); m_textures.push_back(t_ball14);
+	t_ball15 = new aie::Texture("textures/Billiards/ball15.png"); m_textures.push_back(t_ball15);
 
 #pragma endregion
 
-#pragma region VISUALS (Repetitive)
+#pragma region VISUALS
 
 	// play area
 	AddActor(m_backdrop);
@@ -127,33 +155,6 @@ void Billiards::StartUp()
 	AddActor(m_ball14);
 	AddActor(m_ball15);
 
-	// textures
-
-	// players
-	t_ballPlayer = new aie::Texture("textures/Billiards/ballwhite.png");
-	t_cuePlayer = new aie::Texture("textures/Billiards/poolcue.png");
-
-	// full balls
-	t_ball1 = new aie::Texture("textures/Billiards/ball1.png"); m_textures.push_back(t_ball1);
-	t_ball2 = new aie::Texture("textures/Billiards/ball2.png"); m_textures.push_back(t_ball2);
-	t_ball3 = new aie::Texture("textures/Billiards/ball3.png"); m_textures.push_back(t_ball3);
-	t_ball4 = new aie::Texture("textures/Billiards/ball4.png"); m_textures.push_back(t_ball4);
-	t_ball5 = new aie::Texture("textures/Billiards/ball5.png"); m_textures.push_back(t_ball5);
-	t_ball6 = new aie::Texture("textures/Billiards/ball6.png"); m_textures.push_back(t_ball6);
-	t_ball7 = new aie::Texture("textures/Billiards/ball7.png"); m_textures.push_back(t_ball7);
-
-	// 8 ball		
-	t_ball8 = new aie::Texture("textures/Billiards/ball8.png"); m_textures.push_back(t_ball9);
-
-	// stripped balls
-	t_ball9 = new aie::Texture("textures/Billiards/ball9.png");	 m_textures.push_back(t_ball9);
-	t_ball10 = new aie::Texture("textures/Billiards/ball10.png"); m_textures.push_back(t_ball10);
-	t_ball11 = new aie::Texture("textures/Billiards/ball11.png"); m_textures.push_back(t_ball11);
-	t_ball12 = new aie::Texture("textures/Billiards/ball12.png"); m_textures.push_back(t_ball12);
-	t_ball13 = new aie::Texture("textures/Billiards/ball13.png"); m_textures.push_back(t_ball13);
-	t_ball14 = new aie::Texture("textures/Billiards/ball14.png"); m_textures.push_back(t_ball14);
-	t_ball15 = new aie::Texture("textures/Billiards/ball15.png"); m_textures.push_back(t_ball15);
-
 #pragma endregion
 }
 
@@ -187,7 +188,7 @@ void Billiards::UpdateLocal(float deltaTime)
 
 	// get white ball world position
 	glm::vec2 whiteballpos = m_ballPlayer->GetPosition();
-	 
+
 	// set distance to ball, also calculates the limitations of the power
 	if (input->isMouseButtonDown(0))
 	{
@@ -211,7 +212,7 @@ void Billiards::UpdateLocal(float deltaTime)
 		(whiteballpos.y + normal.y * m_distanceFromBall));
 	// direction to the ball
 	float direction = glm::atan(normal.y, normal.x);
-	 
+
 	// set the position and the rotation
 	m_cueplayer->SetRotation((direction * 8) + -12.5f);
 	m_cueplayer->SetPosition(cuepos);
@@ -231,24 +232,48 @@ void Billiards::UpdateLocal(float deltaTime)
 #pragma region SINK LOGIC
 
 	// sink hole logic (kinda repetitive)
-	m_sinkTopLeft->triggerEnter = [=](Rigidbody* other) { if (other != m_ballPlayer && other->IsKinematic() == false) { other->SetTrigger(true); other->SetKinematic(true); m_sunkBalls.push_back(other); }};
-	m_sinkTopMiddle->triggerEnter = [=](Rigidbody* other) {if (other != m_ballPlayer && other->IsKinematic() == false) { other->SetTrigger(true); other->SetKinematic(true); m_sunkBalls.push_back(other); }};
-	m_sinkTopRight->triggerEnter = [=](Rigidbody* other) {if (other != m_ballPlayer && other->IsKinematic() == false) { other->SetTrigger(true); other->SetKinematic(true); m_sunkBalls.push_back(other);}};
-	m_sinkBottomLeft->triggerEnter = [=](Rigidbody* other) {if (other != m_ballPlayer && other->IsKinematic() == false) { other->SetTrigger(true); other->SetKinematic(true); m_sunkBalls.push_back(other);}};
-	m_sinkBottomMiddle->triggerEnter = [=](Rigidbody* other) {if (other != m_ballPlayer && other->IsKinematic() == false) { other->SetTrigger(true); other->SetKinematic(true); m_sunkBalls.push_back(other);}};
-	m_sinkBottomRight->triggerEnter = [=](Rigidbody* other) {if (other != m_ballPlayer && other->IsKinematic() == false) { other->SetTrigger(true); other->SetKinematic(true); m_sunkBalls.push_back(other);}};
+	m_sinkTopLeft->triggerEnter = [=](Rigidbody* other) {
+		if (other != m_ballPlayer && other->IsKinematic() == false)
+			SunkBall(other); };
+
+	m_sinkTopMiddle->triggerEnter = [=](Rigidbody* other) {
+		if (other != m_ballPlayer && other->IsKinematic() == false)
+			SunkBall(other); };
+
+	m_sinkTopRight->triggerEnter = [=](Rigidbody* other) {
+		if (other != m_ballPlayer && other->IsKinematic() == false)
+			SunkBall(other); };
+
+	m_sinkBottomLeft->triggerEnter = [=](Rigidbody* other) {
+		if (other != m_ballPlayer && other->IsKinematic() == false)
+			SunkBall(other); };
+
+	m_sinkBottomMiddle->triggerEnter = [=](Rigidbody* other) {
+		if (other != m_ballPlayer && other->IsKinematic() == false)
+			SunkBall(other); };
+
+	m_sinkBottomRight->triggerEnter = [=](Rigidbody* other) {
+		if (other != m_ballPlayer && other->IsKinematic() == false)
+			SunkBall(other); };
 
 	// set position to display queue
 
 #pragma endregion
 
-
-	glm::vec2 firstPos(-60, 48);
-	for (auto ball : m_sunkBalls)
+	glm::vec2 firstPosStripped(-60, 45);
+	for (auto ball : m_sunkStrippedBalls)
 	{
 		ball->SetRotation(0);
-		ball->SetPosition(firstPos);
-		firstPos.x += 5.5f;
+		ball->SetPosition(firstPosStripped);
+		firstPosStripped.x += 5.5f;
+	}
+
+	glm::vec2 firstPosSolid(40, 45);
+	for (auto ball : m_sunkSolidBalls)
+	{
+		ball->SetRotation(0);
+		ball->SetPosition(firstPosSolid);
+		firstPosSolid.x += 5.5f;
 	}
 
 	// physics update
@@ -268,6 +293,16 @@ void Billiards::DrawGizmos()
 
 void Billiards::DrawSprites()
 {
+#pragma region Printing Other
+
+	// stripped player UI
+	glm::vec2 player1text(-62, 50);
+	player1text = m_physicsProjectApp->WorldToScreen(player1text);
+	m_physicsProjectApp->GetRenderer()->drawText(m_font, "Player 1: ", player1text.x, player1text.y, 0);
+
+	glm::vec2 player1num(-50, 5);
+
+#pragma endregion
 
 #pragma region PRINTING SPRITES
 
@@ -292,4 +327,16 @@ void Billiards::DrawSprites()
 		m_physicsProjectApp->GetRenderer()->drawSprite(t_cuePlayer, m_physicsProjectApp->WorldToScreen(m_cueplayer->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_cueplayer->GetPosition()).y, 8, 250, m_cueplayer->GetRotation() / 8);
 #pragma endregion
 
+}
+
+void Billiards::SunkBall(Rigidbody* other)
+{
+	other->SetTrigger(true);
+	other->SetKinematic(true);
+	if (other->GetBilliardType() == Stripped)
+		m_sunkStrippedBalls.push_back(other);
+	else if (other->GetBilliardType() == Solid)
+		m_sunkSolidBalls.push_back(other);
+	else if (other->GetBilliardType() == EightBall)
+		m_gameover = true;
 }

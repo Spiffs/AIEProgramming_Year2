@@ -4,10 +4,19 @@
 #include <functional>
 #include <iostream>
 
+enum BilliardType
+{
+	NONE,
+	EightBall,
+	Stripped,
+	Solid
+};
+
 class Rigidbody : public PhysicsObject
 {
 public:
 	Rigidbody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a_rotation);
+	Rigidbody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a_rotation, BilliardType a_bType);
 	~Rigidbody() {};
 
 	virtual void FixedUpdate(glm::vec2 a_gravity, float a_timeStep);
@@ -40,6 +49,9 @@ public:
 	bool isTrigger() { return m_isTrigger; }
 	bool SetTrigger(bool a_state) { return m_isTrigger = a_state; }
 
+	BilliardType GetBilliardType() { return m_bType; }
+	void SetBillardType(BilliardType a_bType) { m_bType = a_bType; }
+
 protected:
 	bool m_isTrigger;
 	std::list<Rigidbody*> m_objectInside;
@@ -55,6 +67,9 @@ protected:
 
 	float m_linearDrag;
 	float m_angularDrag;
+
+	// billiard management
+	BilliardType m_bType;
 
 	// These will store the local x and y axes of the rigidbody based on it's angle of rotation
 	glm::vec2 m_localX;

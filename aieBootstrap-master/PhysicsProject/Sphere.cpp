@@ -10,6 +10,14 @@ Sphere::Sphere(glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a
 	m_moment = 0.5f * m_mass * m_radius * m_radius;
 }
 
+Sphere::Sphere(glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a_radius, glm::vec4 a_color, BilliardType a_bType) :
+	Rigidbody(SPHERE, a_position, a_velocity, a_mass, 0, a_bType)
+{
+	m_radius = a_radius;
+	m_color = a_color;
+	m_moment = 0.5f * m_mass * m_radius * m_radius;
+}
+
 Sphere::~Sphere()
 {
 	

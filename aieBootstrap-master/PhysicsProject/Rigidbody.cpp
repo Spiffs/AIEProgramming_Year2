@@ -17,6 +17,23 @@ Rigidbody::Rigidbody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velo
 	m_elasticity = 0.8f;
 	m_linearDrag = 0.5f;
 	m_angularDrag = 0.6f;
+	m_bType = NONE;
+}
+
+// case for billiard balls
+Rigidbody::Rigidbody(ShapeType a_shapeID, glm::vec2 a_position, glm::vec2 a_velocity, float a_mass, float a_rotation, BilliardType a_bType) : PhysicsObject(a_shapeID)
+{
+	m_position = a_position;
+	m_velocity = a_velocity;
+	m_mass = a_mass;
+	m_rotation = a_rotation;
+	m_angularVelocity = 0;
+	m_isKinematic = false;
+	m_isTrigger = false;
+	m_elasticity = 0.8f;
+	m_linearDrag = 0.5f;
+	m_angularDrag = 0.6f;
+	m_bType = a_bType;	
 }
 
 void Rigidbody::FixedUpdate(glm::vec2 a_gravity, float a_timeStep)

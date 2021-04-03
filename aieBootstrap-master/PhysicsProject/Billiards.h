@@ -6,6 +6,7 @@
 #include "PhysicsScene.h"
 #include <Texture.h>
 #include <vector>
+#include <Font.h>
 
 static glm::vec4 BLUE(0, 0, 1, 1);
 static glm::vec4 RED(1, 0, 0, 1);
@@ -29,20 +30,33 @@ public:
 	void DrawGizmos();
 	void DrawSprites();
 
+	void SunkBall(Rigidbody* other);
+
 protected:
+
+	// detects if player sunk the 8 ball
+	bool m_gameover = false;
+
+	aie::Font* m_font;
+
+	// radius of the balls
 	float m_radius = 2.5f;
 
 	// update variables	
 	bool turn;
 	bool turnUpdate;
 	
+	// cue physics
 	glm::vec2 m_mousePosOnDown = glm::vec2(NULL);
 	float m_distanceFromBall = 30;
 
+	// vectors for storing textures to draw
 	std::vector<aie::Texture*> m_textures;
-	std::vector<Rigidbody*> m_sunkBalls;
+	std::vector<Rigidbody*> m_sunkStrippedBalls;
+	std::vector<Rigidbody*> m_sunkSolidBalls;
 
-	// play area
+#pragma region PlayArea
+
 	Box* m_backdrop;
 	Box* m_topBorder;
 	Box* m_bottomBorder;
@@ -88,10 +102,10 @@ protected:
 	Sphere* m_ball13;
 	Sphere* m_ball14;
 	Sphere* m_ball15;
+
+#pragma endregion
 	 
 #pragma region TEXTURES
-
-	// textures
 
 	// player
 	aie::Texture* t_ballPlayer;
