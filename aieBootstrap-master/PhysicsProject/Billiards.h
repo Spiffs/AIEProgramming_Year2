@@ -48,7 +48,7 @@ protected:
 	// update variables	
 	bool turn;
 	bool turnUpdate;
-	
+
 	// cue physics
 	glm::vec2 m_mousePosOnDown = glm::vec2(NULL);
 	float m_distanceFromBall = 30;
@@ -120,7 +120,7 @@ protected:
 	Box* m_goButton;
 
 #pragma endregion
-	 
+
 #pragma region TEXTURES
 
 	// player
