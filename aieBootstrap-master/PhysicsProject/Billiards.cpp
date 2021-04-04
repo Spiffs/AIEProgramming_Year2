@@ -3,17 +3,23 @@
 #include "PhysicsProjectApp.h"
 #include "Input.h"
 #include <Gizmos.h>
+#include <sstream>
 
 Billiards::~Billiards()
 {
-	delete m_font;
+	delete m_fontSize11;
+	delete m_fontSize20;
+	delete m_fontSize30;
+
 }
 
 void Billiards::StartUp()
 {
 #pragma region POINTER DEFINITIONS
 
-	m_font = new aie::Font("../bin/font/SuperLegendBoy.ttf", 20);
+	m_fontSize11 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 11);
+	m_fontSize20 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 20);
+	m_fontSize30 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 30);
 
 	// play area
 	m_backdrop = new Box(glm::vec2(0), glm::vec2(0), 0, 1000, 110, 60, glm::vec4(0, .5f, 0, 1));
@@ -41,6 +47,14 @@ void Billiards::StartUp()
 	// player
 	m_cueplayer = new Box(glm::vec2(0), glm::vec2(0), 0, 1, 10, 2, WHITE);
 	m_ballPlayer = new Sphere(glm::vec2(0, 0), glm::vec2(0, 0), 3, m_radius, WHITE);
+
+	// player UI
+	m_player1SurroundBox = new Box(glm::vec2(-43.5, 45), glm::vec2(0), 0, 1, 20.25, 3.75, glm::vec4(0.2f, 0.1f, 0, 1));
+	m_player1InnerBox = new Box(glm::vec2(-43.5, 45), glm::vec2(0), 0, 1, 19.75, 3.25, glm::vec4(.4f, .2f, 0, 1));
+
+	m_player2SurroundBox = new Box(glm::vec2(56.5, 45), glm::vec2(0), 0, 1, 20.25, 3.75, glm::vec4(0.2f, 0.1f, 0, 1));
+	m_player2InnerBox = new Box(glm::vec2(56.5, 45), glm::vec2(0), 0, 1, 19.75, 3.25, glm::vec4(.4f, .2f, 0, 1));
+
 
 	// solid balls
 	m_ball1 = new Sphere(glm::vec2(30, 0), glm::vec2(0), 2, m_radius, YELLOW, Solid);
@@ -137,6 +151,13 @@ void Billiards::StartUp()
 	AddActor(m_sinkBottomRight);
 	m_sinkBottomRight->SetTrigger(true);
 
+	// player UI
+	AddActor(m_player1SurroundBox);
+	AddActor(m_player1InnerBox);
+	AddActor(m_player2SurroundBox);
+	AddActor(m_player2InnerBox);
+
+
 	// pushing to list to draw
 	AddActor(m_ballPlayer);
 	AddActor(m_ball1);
@@ -180,10 +201,17 @@ void Billiards::UpdateLocal(float deltaTime)
 	// reset and take next turn
 	else if (glm::abs(m_ballPlayer->GetVelocity().x) < 0.1f && glm::abs(m_ballPlayer->GetVelocity().y) < 0.1f && !turn)
 	{
+		// next turn logic
 		turnUpdate = true;
 		turn = true;
 		m_mousePosOnDown = glm::vec2(NULL);
 		m_distanceFromBall = 30;
+
+		// players turn update logic
+		if (m_playersTurn == 1)
+			m_playersTurn = 2;
+		else if (m_playersTurn == 2)
+			m_playersTurn = 1;
 	}
 
 	// get white ball world position
@@ -226,6 +254,7 @@ void Billiards::UpdateLocal(float deltaTime)
 	{
 		float force = 10 * (m_distanceFromBall - 30);
 		m_ballPlayer->ApplyForce(hitnormal * glm::vec2(force), m_ballPlayer->GetPosition());
+
 		turn = false;
 	}
 
@@ -291,16 +320,34 @@ void Billiards::DrawGizmos()
 	}
 }
 
-void Billiards::DrawSprites()
+void Billiards::Draw2DRenderer()
 {
 #pragma region Printing Other
 
-	// stripped player UI
+	// stripped player UI (Player 1)
 	glm::vec2 player1text(-62, 50);
 	player1text = m_physicsProjectApp->WorldToScreen(player1text);
-	m_physicsProjectApp->GetRenderer()->drawText(m_font, "Player 1: ", player1text.x, player1text.y, 0);
+	m_physicsProjectApp->GetRenderer()->drawText(m_fontSize20, "Player 1: ", player1text.x, player1text.y);
 
-	glm::vec2 player1num(-50, 5);
+	// solid player UI (Player 2)
+	glm::vec2 player2text(38, 50);
+	player2text = m_physicsProjectApp->WorldToScreen(player2text);
+	m_physicsProjectApp->GetRenderer()->drawText(m_fontSize20, "Player 2: ", player2text.x, player2text.y);
+
+	// players turn logic
+	std::string playersturns = std::to_string(m_playersTurn);
+	const char* playersturnc = playersturns.c_str();
+
+	// players turn text
+	glm::vec2 playerturn11(-5.8, 52);
+	glm::vec2 playerturn20(-6, 49);
+	glm::vec2 playerturn30(-2, 45);
+	playerturn11 = m_physicsProjectApp->WorldToScreen(playerturn11);
+	playerturn20 = m_physicsProjectApp->WorldToScreen(playerturn20);
+	playerturn30 = m_physicsProjectApp->WorldToScreen(playerturn30);
+	m_physicsProjectApp->GetRenderer()->drawText(m_fontSize11, "PLAYERS", playerturn11.x, playerturn11.y);
+	m_physicsProjectApp->GetRenderer()->drawText(m_fontSize20, "TURN", playerturn20.x, playerturn20.y);
+	m_physicsProjectApp->GetRenderer()->drawText(m_fontSize30, playersturnc, playerturn30.x, playerturn30.y);
 
 #pragma endregion
 

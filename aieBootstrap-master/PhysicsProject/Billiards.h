@@ -28,7 +28,7 @@ public:
 	void StartUp();
 	void UpdateLocal(float deltaTime);
 	void DrawGizmos();
-	void DrawSprites();
+	void Draw2DRenderer();
 
 	void SunkBall(Rigidbody* other);
 
@@ -37,7 +37,9 @@ protected:
 	// detects if player sunk the 8 ball
 	bool m_gameover = false;
 
-	aie::Font* m_font;
+	aie::Font* m_fontSize11;
+	aie::Font* m_fontSize20;
+	aie::Font* m_fontSize30;
 
 	// radius of the balls
 	float m_radius = 2.5f;
@@ -49,6 +51,7 @@ protected:
 	// cue physics
 	glm::vec2 m_mousePosOnDown = glm::vec2(NULL);
 	float m_distanceFromBall = 30;
+	int m_playersTurn = 1;
 
 	// vectors for storing textures to draw
 	std::vector<aie::Texture*> m_textures;
@@ -76,6 +79,13 @@ protected:
 	Box* m_linerBottomLeft;
 	Box* m_linerBottomMiddle;
 	Box* m_linerBottomRight;
+
+	// player UI
+	Box* m_player1SurroundBox;
+	Box* m_player1InnerBox;
+
+	Box* m_player2SurroundBox;
+	Box* m_player2InnerBox;
 
 
 	// player

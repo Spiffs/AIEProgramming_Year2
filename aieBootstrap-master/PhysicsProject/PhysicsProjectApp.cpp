@@ -105,7 +105,7 @@ void PhysicsProjectApp::draw() {
 
 
 	// draw sprites here
-	m_billiards->DrawSprites();
+	m_billiards->Draw2DRenderer();
 
 
 	//m_2dRenderer->drawSprite(new aie::Texture("../bin/textures/Billiards/ball1.png"), 0, 0, 2000, 2000, 0);
