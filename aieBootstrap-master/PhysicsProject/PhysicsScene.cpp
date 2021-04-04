@@ -56,7 +56,7 @@ void PhysicsScene::RemoveActor(PhysicsObject* a_actor)
 
 void PhysicsScene::Update(float dt)
 {
-	static std::list<PhysicsObject*> dirty; // MUST REMOVE
+	//static std::list<PhysicsObject*> dirty; // MUST REMOVE
 	static float accumulatedTime = 0.0f;
 	accumulatedTime += dt;
 

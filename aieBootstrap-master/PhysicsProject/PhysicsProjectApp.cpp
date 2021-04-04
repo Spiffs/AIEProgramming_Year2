@@ -18,7 +18,7 @@ PhysicsProjectApp::PhysicsProjectApp()
 
 PhysicsProjectApp::~PhysicsProjectApp()
 {
-	
+
 }
 
 bool PhysicsProjectApp::startup() {
@@ -52,7 +52,7 @@ bool PhysicsProjectApp::startup() {
 	return true;
 }
 
-void PhysicsProjectApp::shutdown() 
+void PhysicsProjectApp::shutdown()
 {
 	delete m_2dRenderer;
 	delete m_escapeFont;
@@ -66,56 +66,36 @@ void PhysicsProjectApp::update(float deltaTime)
 
 	aie::Gizmos::clear();
 
-	//m_physicsScene->Update(deltaTime);
-	//m_physicsScene->Draw();
-
-
-	m_billiards->UpdateLocal(deltaTime);
 	// draw gizmos
 	m_billiards->DrawGizmos();
 
-
-	//if (input->isMouseButtonDown(0))
-	//{
-	//	int xScreen, yScreen;
-	//	input->getMouseXY(&xScreen, &yScreen);
-	//	glm::vec2 worldPos = ScreenToWorld(glm::vec2(xScreen, yScreen));
-	//	aie::Gizmos::add2DCircle(worldPos, 5, 32, glm::vec4(0.3f));
-	//	std::cout << worldPos.x << ", " << worldPos.y << std::endl;
-	//}
+	// independent update function to parent class PhsyicsScene 
+	m_billiards->UpdateLocal(deltaTime);
 
 	// exit the application
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
-	{
 		quit();
-	}
-
 }
 
-void PhysicsProjectApp::draw() {
+void PhysicsProjectApp::draw() 
+{
 
 	// wipe the screen to the background color
-	clearScreen();
+	//clearScreen();
 
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
-	// x-axis = -100 to 100, y-axis = -56.25 to 65.25 (m_extents = 100 / 16:9)
-	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.0f, 1.0f));
-
-
-	// draw sprites here
-	m_billiards->Draw2DRenderer();
-
-
-	//m_2dRenderer->drawSprite(new aie::Texture("../bin/textures/Billiards/ball1.png"), 0, 0, 2000, 2000, 0);
-
+	// draw2D moved to billiards
+	
+	// print fps 
 	char fps[32];
 	sprintf_s(fps, 32, "FPS %i", getFPS());
 	m_2dRenderer->drawText(m_fpsFont, fps, 7, 30);
 
 	// output some text, uses the last used color
 	m_2dRenderer->drawText(m_escapeFont, "Press ESC to quit", 5, 5);
+	m_2dRenderer->drawText(m_fpsFont, "Made By Oscar Smith", 1150, 5);
 
 	// done drawing sprites
 	m_2dRenderer->end();

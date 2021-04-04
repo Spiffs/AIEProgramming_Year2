@@ -2,6 +2,7 @@
 #include <Renderer2D.h>
 #include "PhysicsProjectApp.h"
 #include "Input.h"
+#include "glm\ext.hpp"
 #include <Gizmos.h>
 #include <sstream>
 
@@ -104,6 +105,7 @@ void Billiards::StartUp()
 	t_ball14 = new aie::Texture("textures/Billiards/ball14.png"); m_textures.push_back(t_ball14);
 	t_ball15 = new aie::Texture("textures/Billiards/ball15.png"); m_textures.push_back(t_ball15);
 
+
 #pragma endregion
 
 #pragma region VISUALS
@@ -181,134 +183,158 @@ void Billiards::StartUp()
 
 void Billiards::UpdateLocal(float deltaTime)
 {
-	this->Update(deltaTime);
-
-	// game logic update
-	aie::Input* input = aie::Input::getInstance();
-
-	// get mouse screen position then convert to world
-	int mousex, mousey;
-	input->getMouseXY(&mousex, &mousey);
-	// convert to world and convert ints to floats
-	glm::vec2 mousexy(m_physicsProjectApp->ScreenToWorld(glm::vec2(mousex, mousey)));
-
-	// set mouse start pos on down
-	if (input->isMouseButtonDown(0) && turn && turnUpdate)
+	if (!m_gameover)
 	{
-		m_mousePosOnDown = mousexy;
-		turnUpdate = false;
-	}
-	// reset and take next turn
-	else if (glm::abs(m_ballPlayer->GetVelocity().x) < 0.1f && glm::abs(m_ballPlayer->GetVelocity().y) < 0.1f && !turn)
-	{
-		// next turn logic
-		turnUpdate = true;
-		turn = true;
-		m_mousePosOnDown = glm::vec2(NULL);
-		m_distanceFromBall = 30;
+		this->Update(deltaTime);
 
-		// players turn update logic
-		if (m_playersTurn == 1)
-			m_playersTurn = 2;
-		else if (m_playersTurn == 2)
-			m_playersTurn = 1;
-	}
+		// game logic update
+		aie::Input* input = aie::Input::getInstance();
 
-	// get white ball world position
-	glm::vec2 whiteballpos = m_ballPlayer->GetPosition();
+		// get mouse screen position then convert to world
+		int mousex, mousey;
+		input->getMouseXY(&mousex, &mousey);
+		// convert to world and convert ints to floats
+		glm::vec2 mousexy(m_physicsProjectApp->ScreenToWorld(glm::vec2(mousex, mousey)));
 
-	// set distance to ball, also calculates the limitations of the power
-	if (input->isMouseButtonDown(0))
-	{
-		m_distanceFromBall = 30;
-		float distancefromballmod = 0;
-		distancefromballmod += (glm::distance(mousexy, m_ballPlayer->GetPosition()) - glm::distance(m_mousePosOnDown, m_ballPlayer->GetPosition()));
+		// set mouse start pos on down
+		if (input->isMouseButtonDown(0) && turn && turnUpdate)
+		{
+			m_mousePosOnDown = mousexy;
+			turnUpdate = false;
+		}
+		// reset and take next turn
+		else if (glm::abs(m_ballPlayer->GetVelocity().x) < 0.1f && glm::abs(m_ballPlayer->GetVelocity().y) < 0.1f && !turn)
+		{
+			// next turn logic
+			turnUpdate = true;
+			turn = true;
+			m_mousePosOnDown = glm::vec2(NULL);
+			m_distanceFromBall = 30;
 
-		if (distancefromballmod < 0)
-			distancefromballmod = 0;
-		else if (distancefromballmod > 30)
-			distancefromballmod = 30;
+			// players turn update logic
+			if (m_playersTurn == 1)
+				m_playersTurn = 2;
+			else if (m_playersTurn == 2)
+				m_playersTurn = 1;
+		}
 
-		m_distanceFromBall += distancefromballmod;
-	}
+		// get white ball world position
+		glm::vec2 whiteballpos = m_ballPlayer->GetPosition();
 
-	// get the direction
-	glm::vec2 cuepos(0);
-	// find the position for the cue
-	glm::vec2 normal(glm::normalize(mousexy - whiteballpos));
-	cuepos = glm::vec2((whiteballpos.x + normal.x * m_distanceFromBall),
-		(whiteballpos.y + normal.y * m_distanceFromBall));
-	// direction to the ball
-	float direction = glm::atan(normal.y, normal.x);
+		// set distance to ball, also calculates the limitations of the power
+		if (input->isMouseButtonDown(0))
+		{
+			m_distanceFromBall = 30;
+			float distancefromballmod = 0;
+			distancefromballmod += (glm::distance(mousexy, m_ballPlayer->GetPosition()) - glm::distance(m_mousePosOnDown, m_ballPlayer->GetPosition()));
 
-	// set the position and the rotation
-	m_cueplayer->SetRotation((direction * 8) + -12.5f);
-	m_cueplayer->SetPosition(cuepos);
+			if (distancefromballmod < 0)
+				distancefromballmod = 0;
+			else if (distancefromballmod > 30)
+				distancefromballmod = 30;
 
-	//______________________________________________________________________________________________________________________________________
+			m_distanceFromBall += distancefromballmod;
+		}
+
+		// get the direction
+		glm::vec2 cuepos(0);
+		// find the position for the cue
+		glm::vec2 normal(glm::normalize(mousexy - whiteballpos));
+		cuepos = glm::vec2((whiteballpos.x + normal.x * m_distanceFromBall),
+			(whiteballpos.y + normal.y * m_distanceFromBall));
+		// direction to the ball
+		float direction = glm::atan(normal.y, normal.x);
+
+		// set the position and the rotation
+		m_cueplayer->SetRotation((direction * 8) + -12.5f);
+		m_cueplayer->SetPosition(cuepos);
 
 
-	glm::vec2 hitnormal(glm::normalize(whiteballpos - mousexy));
-	// hit ball
-	if (input->isMouseButtonUp(0) && m_mousePosOnDown != glm::vec2(NULL) && turn)
-	{
-		float force = 10 * (m_distanceFromBall - 30);
-		m_ballPlayer->ApplyForce(hitnormal * glm::vec2(force), m_ballPlayer->GetPosition());
+		// hit logic
+		glm::vec2 hitnormal(glm::normalize(whiteballpos - mousexy));
+		if (input->isMouseButtonUp(0) && m_mousePosOnDown != glm::vec2(NULL) && turn)
+		{
+			float force = 10 * (m_distanceFromBall - 30);
+			m_ballPlayer->ApplyForce(hitnormal * glm::vec2(force), m_ballPlayer->GetPosition());
 
-		turn = false;
-	}
+			turn = false;
+		}
 
 #pragma region SINK LOGIC
 
-	// sink hole logic (kinda repetitive)
-	m_sinkTopLeft->triggerEnter = [=](Rigidbody* other) {
-		if (other != m_ballPlayer && other->IsKinematic() == false)
-			SunkBall(other); };
+		// sink hole logic (kinda repetitive)
+		m_sinkTopLeft->triggerEnter = [=](Rigidbody* other) {
+			if (other != m_ballPlayer && other->IsKinematic() == false)
+				SunkBall(other); };
 
-	m_sinkTopMiddle->triggerEnter = [=](Rigidbody* other) {
-		if (other != m_ballPlayer && other->IsKinematic() == false)
-			SunkBall(other); };
+		m_sinkTopMiddle->triggerEnter = [=](Rigidbody* other) {
+			if (other != m_ballPlayer && other->IsKinematic() == false)
+				SunkBall(other); };
 
-	m_sinkTopRight->triggerEnter = [=](Rigidbody* other) {
-		if (other != m_ballPlayer && other->IsKinematic() == false)
-			SunkBall(other); };
+		m_sinkTopRight->triggerEnter = [=](Rigidbody* other) {
+			if (other != m_ballPlayer && other->IsKinematic() == false)
+				SunkBall(other); };
 
-	m_sinkBottomLeft->triggerEnter = [=](Rigidbody* other) {
-		if (other != m_ballPlayer && other->IsKinematic() == false)
-			SunkBall(other); };
+		m_sinkBottomLeft->triggerEnter = [=](Rigidbody* other) {
+			if (other != m_ballPlayer && other->IsKinematic() == false)
+				SunkBall(other); };
 
-	m_sinkBottomMiddle->triggerEnter = [=](Rigidbody* other) {
-		if (other != m_ballPlayer && other->IsKinematic() == false)
-			SunkBall(other); };
+		m_sinkBottomMiddle->triggerEnter = [=](Rigidbody* other) {
+			if (other != m_ballPlayer && other->IsKinematic() == false)
+				SunkBall(other); };
 
-	m_sinkBottomRight->triggerEnter = [=](Rigidbody* other) {
-		if (other != m_ballPlayer && other->IsKinematic() == false)
-			SunkBall(other); };
+		m_sinkBottomRight->triggerEnter = [=](Rigidbody* other) {
+			if (other != m_ballPlayer && other->IsKinematic() == false)
+				SunkBall(other); };
 
-	// set position to display queue
+		// set position to display queue
 
 #pragma endregion
 
-	glm::vec2 firstPosStripped(-60, 45);
-	for (auto ball : m_sunkStrippedBalls)
-	{
-		ball->SetRotation(0);
-		ball->SetPosition(firstPosStripped);
-		firstPosStripped.x += 5.5f;
+#pragma region PRINT SUNK BALLS
+
+		glm::vec2 firstPosStripped(-60, 45);
+		for (auto ball : m_sunkStrippedBalls)
+		{
+			ball->SetRotation(0);
+			ball->SetPosition(firstPosStripped);
+			firstPosStripped.x += 5.5f;
+		}
+
+		glm::vec2 firstPosSolid(40, 45);
+		for (auto ball : m_sunkSolidBalls)
+		{
+			ball->SetRotation(0);
+			ball->SetPosition(firstPosSolid);
+			firstPosSolid.x += 5.5f;
+		}
+
+		// physics update
+		for (auto ball : m_actors)
+		{
+			ball->FixedUpdate(glm::vec2(0), deltaTime);
+		}
+
+#pragma endregion
+
 	}
 
-	glm::vec2 firstPosSolid(40, 45);
-	for (auto ball : m_sunkSolidBalls)
-	{
-		ball->SetRotation(0);
-		ball->SetPosition(firstPosSolid);
-		firstPosSolid.x += 5.5f;
-	}
+	m_physicsProjectApp->clearScreen();
 
-	// physics update
-	for (auto ball : m_actors)
+	m_physicsProjectApp->GetRenderer()->begin();
+
+	// x-axis = -100 to 100, y-axis = -56.25 to 65.25 (m_extents = 100 / 16:9)
+	aie::Gizmos::draw2D(glm::ortho<float>(-m_physicsProjectApp->GetExtents(), m_physicsProjectApp->GetExtents(), -m_physicsProjectApp->GetExtents() / m_physicsProjectApp->GetAspectRatio(), m_physicsProjectApp->GetExtents() / m_physicsProjectApp->GetAspectRatio(), -1.0f, 1.0f));
+
+	Draw2DRenderer();
+
+	m_physicsProjectApp->GetRenderer()->end();
+
+	if (m_gameover)
 	{
-		ball->FixedUpdate(glm::vec2(0), deltaTime);
+
+		
+
 	}
 }
 
@@ -322,7 +348,7 @@ void Billiards::DrawGizmos()
 
 void Billiards::Draw2DRenderer()
 {
-#pragma region Printing Other
+#pragma region PRINTER OTHER
 
 	// stripped player UI (Player 1)
 	glm::vec2 player1text(-62, 50);
@@ -339,9 +365,9 @@ void Billiards::Draw2DRenderer()
 	const char* playersturnc = playersturns.c_str();
 
 	// players turn text
-	glm::vec2 playerturn11(-5.8, 52);
-	glm::vec2 playerturn20(-6, 49);
-	glm::vec2 playerturn30(-2, 45);
+	glm::vec2 playerturn11(-5.25, 52);
+	glm::vec2 playerturn20(-5.5, 49);
+	glm::vec2 playerturn30(-1.8, 45);
 	playerturn11 = m_physicsProjectApp->WorldToScreen(playerturn11);
 	playerturn20 = m_physicsProjectApp->WorldToScreen(playerturn20);
 	playerturn30 = m_physicsProjectApp->WorldToScreen(playerturn30);

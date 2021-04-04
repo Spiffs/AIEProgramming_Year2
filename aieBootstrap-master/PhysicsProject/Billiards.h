@@ -30,6 +30,7 @@ public:
 	void DrawGizmos();
 	void Draw2DRenderer();
 
+	bool GetIsGameOver() { return m_gameover; }
 	void SunkBall(Rigidbody* other);
 
 protected:
@@ -112,6 +113,11 @@ protected:
 	Sphere* m_ball13;
 	Sphere* m_ball14;
 	Sphere* m_ball15;
+
+
+	// game over UI
+	Box* m_goBackground;
+	Box* m_goButton;
 
 #pragma endregion
 	 
