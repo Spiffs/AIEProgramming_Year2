@@ -86,9 +86,22 @@ void PhysicsProjectApp::draw()
 	// begin drawing sprites
 	m_2dRenderer->begin();
 
+<<<<<<< HEAD
 	// draw2D moved to billiards
 	
 	// print fps 
+=======
+	// x-axis = -100 to 100, y-axis = -56.25 to 65.25 (m_extents = 100 / 16:9)
+	aie::Gizmos::draw2D(glm::ortho<float>(-m_extents, m_extents, -m_extents / m_aspectRatio, m_extents / m_aspectRatio, -1.0f, 1.0f));
+
+
+	// draw sprites here
+	m_billiards->Draw2DRenderer();
+
+
+	//m_2dRenderer->drawSprite(new aie::Texture("../bin/textures/Billiards/ball1.png"), 0, 0, 2000, 2000, 0);
+
+>>>>>>> main
 	char fps[32];
 	sprintf_s(fps, 32, "FPS %i", getFPS());
 	m_2dRenderer->drawText(m_fpsFont, fps, 7, 30);

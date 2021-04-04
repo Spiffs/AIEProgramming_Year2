@@ -185,6 +185,7 @@ void Billiards::UpdateLocal(float deltaTime)
 {
 	if (!m_gameover)
 	{
+<<<<<<< HEAD
 		this->Update(deltaTime);
 
 		// game logic update
@@ -259,6 +260,23 @@ void Billiards::UpdateLocal(float deltaTime)
 
 			turn = false;
 		}
+=======
+		// next turn logic
+		turnUpdate = true;
+		turn = true;
+		m_mousePosOnDown = glm::vec2(NULL);
+		m_distanceFromBall = 30;
+
+		// players turn update logic
+		if (m_playersTurn == 1)
+			m_playersTurn = 2;
+		else if (m_playersTurn == 2)
+			m_playersTurn = 1;
+	}
+
+	// get white ball world position
+	glm::vec2 whiteballpos = m_ballPlayer->GetPosition();
+>>>>>>> main
 
 #pragma region SINK LOGIC
 
@@ -287,7 +305,19 @@ void Billiards::UpdateLocal(float deltaTime)
 			if (other != m_ballPlayer && other->IsKinematic() == false)
 				SunkBall(other); };
 
+<<<<<<< HEAD
 		// set position to display queue
+=======
+	glm::vec2 hitnormal(glm::normalize(whiteballpos - mousexy));
+	// hit ball
+	if (input->isMouseButtonUp(0) && m_mousePosOnDown != glm::vec2(NULL) && turn)
+	{
+		float force = 10 * (m_distanceFromBall - 30);
+		m_ballPlayer->ApplyForce(hitnormal * glm::vec2(force), m_ballPlayer->GetPosition());
+
+		turn = false;
+	}
+>>>>>>> main
 
 #pragma endregion
 
@@ -365,9 +395,15 @@ void Billiards::Draw2DRenderer()
 	const char* playersturnc = playersturns.c_str();
 
 	// players turn text
+<<<<<<< HEAD
 	glm::vec2 playerturn11(-5.25, 52);
 	glm::vec2 playerturn20(-5.5, 49);
 	glm::vec2 playerturn30(-1.8, 45);
+=======
+	glm::vec2 playerturn11(-5.8, 52);
+	glm::vec2 playerturn20(-6, 49);
+	glm::vec2 playerturn30(-2, 45);
+>>>>>>> main
 	playerturn11 = m_physicsProjectApp->WorldToScreen(playerturn11);
 	playerturn20 = m_physicsProjectApp->WorldToScreen(playerturn20);
 	playerturn30 = m_physicsProjectApp->WorldToScreen(playerturn30);
