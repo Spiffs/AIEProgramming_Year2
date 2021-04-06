@@ -67,7 +67,7 @@ void PhysicsProjectApp::update(float deltaTime)
 	aie::Gizmos::clear();
 
 	// draw gizmos
-	m_billiards->DrawGizmos();
+	//m_billiards->DrawGizmos();
 
 	// independent update function to parent class PhsyicsScene 
 	m_billiards->UpdateLocal(deltaTime);
@@ -79,10 +79,6 @@ void PhysicsProjectApp::update(float deltaTime)
 
 void PhysicsProjectApp::draw()
 {
-
-	// wipe the screen to the background color
-	//clearScreen();
-
 	// begin drawing sprites
 	m_2dRenderer->begin();
 

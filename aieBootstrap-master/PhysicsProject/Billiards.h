@@ -36,11 +36,13 @@ public:
 protected:
 
 	// detects if player sunk the 8 ball
+	bool m_gameoverSetup = false;
 	bool m_gameover = false;
 
 	aie::Font* m_fontSize11;
 	aie::Font* m_fontSize20;
 	aie::Font* m_fontSize30;
+	aie::Font* m_fontSize60;
 
 	// radius of the balls
 	float m_radius = 2.5f;

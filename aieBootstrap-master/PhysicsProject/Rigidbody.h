@@ -7,9 +7,9 @@
 enum BilliardType
 {
 	NONE,
-	EightBall,
-	Stripped,
-	Solid
+	EIGHTBALL,
+	STRIPPED,
+	SOLID
 };
 
 class Rigidbody : public PhysicsObject

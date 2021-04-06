@@ -8,10 +8,34 @@
 
 Billiards::~Billiards()
 {
+#pragma region MEMORY CLEARING
+
+	// some, the rest is in the PhysicsScene
 	delete m_fontSize11;
 	delete m_fontSize20;
 	delete m_fontSize30;
+	delete m_fontSize60;
 
+	delete m_goBackground;
+	delete m_goButton;
+
+	delete t_ball1;
+	delete t_ball2;
+	delete t_ball3;
+	delete t_ball4;
+	delete t_ball5;
+	delete t_ball6;
+	delete t_ball7;
+	delete t_ball8;
+	delete t_ball9;
+	delete t_ball10;
+	delete t_ball11;
+	delete t_ball12;
+	delete t_ball13;
+	delete t_ball14;
+	delete t_ball15;
+
+#pragma endregion
 }
 
 void Billiards::StartUp()
@@ -21,6 +45,7 @@ void Billiards::StartUp()
 	m_fontSize11 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 11);
 	m_fontSize20 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 20);
 	m_fontSize30 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 30);
+	m_fontSize60 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 60);
 
 	// play area
 	m_backdrop = new Box(glm::vec2(0), glm::vec2(0), 0, 1000, 110, 60, glm::vec4(0, .5f, 0, 1));
@@ -58,25 +83,30 @@ void Billiards::StartUp()
 
 
 	// solid balls
-	m_ball1 = new Sphere(glm::vec2(30, 0), glm::vec2(0), 2, m_radius, YELLOW, Solid);
-	m_ball2 = new Sphere(glm::vec2(35, -3), glm::vec2(0), 2, m_radius, BLUE, Solid);
-	m_ball3 = new Sphere(glm::vec2(40, -6), glm::vec2(0), 2, m_radius, RED, Solid);
-	m_ball4 = new Sphere(glm::vec2(45, 3), glm::vec2(0), 2, m_radius, PURPLE, Solid);
-	m_ball5 = new Sphere(glm::vec2(45, -9), glm::vec2(0), 2, m_radius, ORANGE, Solid);
-	m_ball6 = new Sphere(glm::vec2(50, 6), glm::vec2(0), 2, m_radius, GREEN, Solid);
-	m_ball7 = new Sphere(glm::vec2(50, -6), glm::vec2(0), 2, m_radius, BROWN, Solid);
+	m_ball1 = new Sphere(glm::vec2(30, 0), glm::vec2(0), 2, m_radius, YELLOW, SOLID);
+	m_ball2 = new Sphere(glm::vec2(35, -3), glm::vec2(0), 2, m_radius, BLUE, SOLID);
+	m_ball3 = new Sphere(glm::vec2(40, -6), glm::vec2(0), 2, m_radius, RED, SOLID);
+	m_ball4 = new Sphere(glm::vec2(45, 3), glm::vec2(0), 2, m_radius, PURPLE, SOLID);
+	m_ball5 = new Sphere(glm::vec2(45, -9), glm::vec2(0), 2, m_radius, ORANGE, SOLID);
+	m_ball6 = new Sphere(glm::vec2(50, 6), glm::vec2(0), 2, m_radius, GREEN, SOLID);
+	m_ball7 = new Sphere(glm::vec2(50, -6), glm::vec2(0), 2, m_radius, BROWN, SOLID);
 
 	// 8 ball
-	m_ball8 = new Sphere(glm::vec2(40, 0), glm::vec2(0), 2, m_radius, BLACK);
+	m_ball8 = new Sphere(glm::vec2(40, 0), glm::vec2(0), 2, m_radius, BLACK, EIGHTBALL);
 
 	// stripped balls
-	m_ball9 = new Sphere(glm::vec2(35, 3), glm::vec2(0), 2, m_radius, YELLOW, Stripped);
-	m_ball10 = new Sphere(glm::vec2(40, 6), glm::vec2(0), 2, m_radius, BLUE, Stripped);
-	m_ball11 = new Sphere(glm::vec2(45, 9), glm::vec2(0), 2, m_radius, RED, Stripped);
-	m_ball12 = new Sphere(glm::vec2(45, -3), glm::vec2(0), 2, m_radius, PURPLE, Stripped);
-	m_ball13 = new Sphere(glm::vec2(50, 12), glm::vec2(0), 2, m_radius, ORANGE, Stripped);
-	m_ball14 = new Sphere(glm::vec2(50, 0), glm::vec2(0), 2, m_radius, GREEN, Stripped);
-	m_ball15 = new Sphere(glm::vec2(50, -12), glm::vec2(0), 2, m_radius, BROWN, Stripped);
+	m_ball9 = new Sphere(glm::vec2(35, 3), glm::vec2(0), 2, m_radius, YELLOW, STRIPPED);
+	m_ball10 = new Sphere(glm::vec2(40, 6), glm::vec2(0), 2, m_radius, BLUE, STRIPPED);
+	m_ball11 = new Sphere(glm::vec2(45, 9), glm::vec2(0), 2, m_radius, RED, STRIPPED);
+	m_ball12 = new Sphere(glm::vec2(45, -3), glm::vec2(0), 2, m_radius, PURPLE, STRIPPED);
+	m_ball13 = new Sphere(glm::vec2(50, 12), glm::vec2(0), 2, m_radius, ORANGE, STRIPPED);
+	m_ball14 = new Sphere(glm::vec2(50, 0), glm::vec2(0), 2, m_radius, GREEN, STRIPPED);
+	m_ball15 = new Sphere(glm::vec2(50, -12), glm::vec2(0), 2, m_radius, BROWN, STRIPPED);
+
+	// gameover
+	m_goBackground = new Box(glm::vec2(0), glm::vec2(0), 0, 1, 50, 35, glm::vec4(0, 0, 0, 0.5f));
+	m_goButton = new Box(glm::vec2(0, -20), glm::vec2(0), 0, 1, 20, 10, glm::vec4(0, 0, 0, 0.5f));
+
 
 	// textures
 
@@ -108,7 +138,7 @@ void Billiards::StartUp()
 
 #pragma endregion
 
-#pragma region VISUALS
+#pragma region ADDING VISUAL TO SCENE VECTOR
 
 	// play area
 	AddActor(m_backdrop);
@@ -183,10 +213,12 @@ void Billiards::StartUp()
 
 void Billiards::UpdateLocal(float deltaTime)
 {
+	this->Update(deltaTime);
+
+#pragma region GAME LOGIC
+
 	if (!m_gameover)
 	{
-		this->Update(deltaTime);
-
 		// game logic update
 		aie::Input* input = aie::Input::getInstance();
 
@@ -260,6 +292,8 @@ void Billiards::UpdateLocal(float deltaTime)
 			turn = false;
 		}
 
+#pragma endregion
+
 #pragma region SINK LOGIC
 
 		// sink hole logic (kinda repetitive)
@@ -315,27 +349,103 @@ void Billiards::UpdateLocal(float deltaTime)
 			ball->FixedUpdate(glm::vec2(0), deltaTime);
 		}
 
-#pragma endregion
 
 	}
+
+#pragma endregion
+
+#pragma region BEGIN DRAW
+
+	// draw
+	DrawGizmos();
 
 	m_physicsProjectApp->clearScreen();
 
+	// start 2D Renderer
 	m_physicsProjectApp->GetRenderer()->begin();
 
-	// x-axis = -100 to 100, y-axis = -56.25 to 65.25 (m_extents = 100 / 16:9)
-	aie::Gizmos::draw2D(glm::ortho<float>(-m_physicsProjectApp->GetExtents(), m_physicsProjectApp->GetExtents(), -m_physicsProjectApp->GetExtents() / m_physicsProjectApp->GetAspectRatio(), m_physicsProjectApp->GetExtents() / m_physicsProjectApp->GetAspectRatio(), -1.0f, 1.0f));
+#pragma endregion
 
-	Draw2DRenderer();
-
-	m_physicsProjectApp->GetRenderer()->end();
+#pragma region GAMEOVER 
 
 	if (m_gameover)
 	{
+		if (!m_gameoverSetup)
+		{
+			m_goBackground->SetKinematic(true); m_goBackground->SetTrigger(true);
+			m_goButton->SetKinematic(true); m_goButton->SetTrigger(true);
+			m_gameoverSetup = true;
+		}
+
+		m_goBackground->MakeGizmo();
+		m_goBackground->FixedUpdate(m_gravity, m_timeStep);
+		m_goButton->MakeGizmo();
+		m_goButton->FixedUpdate(m_gravity, m_timeStep);
+	}
+
+	// draw all gizmos and 2D reders
+	// I need this to happen but also do more things if m_gameover is true so (I need to draw text over the gizmos
+	aie::Gizmos::draw2D(glm::ortho<float>(-m_physicsProjectApp->GetExtents(), m_physicsProjectApp->GetExtents(), -m_physicsProjectApp->GetExtents() / m_physicsProjectApp->GetAspectRatio(), m_physicsProjectApp->GetExtents() / m_physicsProjectApp->GetAspectRatio(), -1.0f, 1.0f));
+	Draw2DRenderer();
+
+	if (m_gameover)
+	{
+		aie::Input* input = aie::Input::getInstance();
+
+		int wonplayer = 0;
+		if (m_playersTurn == 0)
+		{
+			for (auto ball : m_sunkStrippedBalls)
+				if (ball == m_ball8 && m_sunkStrippedBalls.size() >= 7)
+					wonplayer = 1;
+			if (wonplayer != 1)
+				wonplayer = 2;
+		}
+		else
+		{
+			for (auto ball : m_sunkSolidBalls)
+				if (ball == m_ball8 && m_sunkSolidBalls.size() >=7)
+					wonplayer = 2;
+			if (wonplayer != 2)
+				wonplayer = 1;
+		}
+
+		// printing 
+		std::string wonplayers = std::to_string(wonplayer);
+		const char* wonplayerc = wonplayers.c_str();
+
+		glm::vec2 congratulationText(-40, 19);
+		glm::vec2 playerWonText(-40, 10);
+		glm::vec2 playerWinningNum(3, 10);
+		congratulationText = m_physicsProjectApp->WorldToScreen(congratulationText);
+		playerWonText = m_physicsProjectApp->WorldToScreen(playerWonText);
+		playerWinningNum = m_physicsProjectApp->WorldToScreen(playerWinningNum);
+		m_physicsProjectApp->GetRenderer()->drawText(m_fontSize30, "Congratulations", congratulationText.x, congratulationText.y);
+		m_physicsProjectApp->GetRenderer()->drawText(m_fontSize60, "Player     Won!", playerWonText.x, playerWonText.y);
+		m_physicsProjectApp->GetRenderer()->drawText(m_fontSize60, wonplayerc, playerWinningNum.x, playerWinningNum.y);
 
 
+		// exit button
+		glm::vec2 exitText(-14, -23);
+		exitText = m_physicsProjectApp->WorldToScreen(exitText);
+		m_physicsProjectApp->GetRenderer()->drawText(m_fontSize60, "EXIT", exitText.x, exitText.y);
+
+		if (input->isMouseButtonDown(0))
+		{
+			int mx, my;
+			input->getMouseXY(&mx, &my);
+			glm::vec2 mousexy(m_physicsProjectApp->ScreenToWorld(glm::vec2(mx, my)));
+			if (glm::abs(mousexy.x) <= 10 && mousexy.y <= -15 && mousexy.y >= -25)
+			{
+				exit(0);
+			}
+		}
 
 	}
+
+	m_physicsProjectApp->GetRenderer()->end();
+
+#pragma endregion
 }
 
 void Billiards::DrawGizmos()
@@ -379,37 +489,42 @@ void Billiards::Draw2DRenderer()
 
 #pragma region PRINTING SPRITES
 
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball1, m_physicsProjectApp->WorldToScreen(m_ball1->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball1->GetPosition()).y, 35, 35, m_ball1->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball2, m_physicsProjectApp->WorldToScreen(m_ball2->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball2->GetPosition()).y, 35, 35, m_ball2->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball3, m_physicsProjectApp->WorldToScreen(m_ball3->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball3->GetPosition()).y, 35, 35, m_ball3->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball4, m_physicsProjectApp->WorldToScreen(m_ball4->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball4->GetPosition()).y, 35, 35, m_ball4->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball5, m_physicsProjectApp->WorldToScreen(m_ball5->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball5->GetPosition()).y, 35, 35, m_ball5->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball6, m_physicsProjectApp->WorldToScreen(m_ball6->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball6->GetPosition()).y, 35, 35, m_ball6->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball7, m_physicsProjectApp->WorldToScreen(m_ball7->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball7->GetPosition()).y, 35, 35, m_ball7->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball8, m_physicsProjectApp->WorldToScreen(m_ball8->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball8->GetPosition()).y, 35, 35, m_ball8->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball9, m_physicsProjectApp->WorldToScreen(m_ball9->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball9->GetPosition()).y, 35, 35, m_ball9->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball10, m_physicsProjectApp->WorldToScreen(m_ball10->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball10->GetPosition()).y, 35, 35, m_ball10->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball11, m_physicsProjectApp->WorldToScreen(m_ball11->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball11->GetPosition()).y, 35, 35, m_ball11->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball12, m_physicsProjectApp->WorldToScreen(m_ball12->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball12->GetPosition()).y, 35, 35, m_ball12->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball13, m_physicsProjectApp->WorldToScreen(m_ball13->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball13->GetPosition()).y, 35, 35, m_ball13->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball14, m_physicsProjectApp->WorldToScreen(m_ball14->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball14->GetPosition()).y, 35, 35, m_ball14->GetRotation() / 8);
-	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball15, m_physicsProjectApp->WorldToScreen(m_ball15->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball15->GetPosition()).y, 35, 35, m_ball15->GetRotation() / 8);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball1, m_physicsProjectApp->WorldToScreen(m_ball1->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball1->GetPosition()).y, 35, 35, m_ball1->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball2, m_physicsProjectApp->WorldToScreen(m_ball2->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball2->GetPosition()).y, 35, 35, m_ball2->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball3, m_physicsProjectApp->WorldToScreen(m_ball3->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball3->GetPosition()).y, 35, 35, m_ball3->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball4, m_physicsProjectApp->WorldToScreen(m_ball4->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball4->GetPosition()).y, 35, 35, m_ball4->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball5, m_physicsProjectApp->WorldToScreen(m_ball5->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball5->GetPosition()).y, 35, 35, m_ball5->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball6, m_physicsProjectApp->WorldToScreen(m_ball6->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball6->GetPosition()).y, 35, 35, m_ball6->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball7, m_physicsProjectApp->WorldToScreen(m_ball7->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball7->GetPosition()).y, 35, 35, m_ball7->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball8, m_physicsProjectApp->WorldToScreen(m_ball8->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball8->GetPosition()).y, 35, 35, m_ball8->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball9, m_physicsProjectApp->WorldToScreen(m_ball9->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball9->GetPosition()).y, 35, 35, m_ball9->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball10, m_physicsProjectApp->WorldToScreen(m_ball10->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball10->GetPosition()).y, 35, 35, m_ball10->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball11, m_physicsProjectApp->WorldToScreen(m_ball11->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball11->GetPosition()).y, 35, 35, m_ball11->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball12, m_physicsProjectApp->WorldToScreen(m_ball12->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball12->GetPosition()).y, 35, 35, m_ball12->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball13, m_physicsProjectApp->WorldToScreen(m_ball13->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball13->GetPosition()).y, 35, 35, m_ball13->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball14, m_physicsProjectApp->WorldToScreen(m_ball14->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball14->GetPosition()).y, 35, 35, m_ball14->GetRotation() / 8, 5);
+	m_physicsProjectApp->GetRenderer()->drawSprite(t_ball15, m_physicsProjectApp->WorldToScreen(m_ball15->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ball15->GetPosition()).y, 35, 35, m_ball15->GetRotation() / 8, 5);
 	m_physicsProjectApp->GetRenderer()->drawSprite(t_ballPlayer, m_physicsProjectApp->WorldToScreen(m_ballPlayer->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_ballPlayer->GetPosition()).y, 35, 35, m_ballPlayer->GetRotation() / 8);
 
 	if (turn)
 		m_physicsProjectApp->GetRenderer()->drawSprite(t_cuePlayer, m_physicsProjectApp->WorldToScreen(m_cueplayer->GetPosition()).x, m_physicsProjectApp->WorldToScreen(m_cueplayer->GetPosition()).y, 8, 250, m_cueplayer->GetRotation() / 8);
 #pragma endregion
-
 }
 
 void Billiards::SunkBall(Rigidbody* other)
 {
+#pragma region SINK LOGIC
+
 	other->SetTrigger(true);
 	other->SetKinematic(true);
-	if (other->GetBilliardType() == Stripped)
+
+	// get balltype and do so 
+	if (other->GetBilliardType() == STRIPPED)
 		m_sunkStrippedBalls.push_back(other);
-	else if (other->GetBilliardType() == Solid)
+	else if (other->GetBilliardType() == SOLID)
 		m_sunkSolidBalls.push_back(other);
-	else if (other->GetBilliardType() == EightBall)
+	else if (other->GetBilliardType() == EIGHTBALL)
 		m_gameover = true;
+
+#pragma endregion
 }

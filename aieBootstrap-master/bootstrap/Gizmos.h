@@ -154,6 +154,7 @@ private:
 	unsigned int 	m_2DtriVBO;
 
 	static Gizmos*	sm_singleton;
+	static Gizmos*	sm_singletonTopLayer;
 };
 
 } // namespace aie
