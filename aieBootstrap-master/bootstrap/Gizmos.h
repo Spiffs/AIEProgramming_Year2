@@ -22,6 +22,7 @@ public:
 	// the projection matrix here should ideally be orthographic with a near of -1 and far of 1
 	static void		draw2D(const glm::mat4& projection);
 	static void		draw2D(float screenWidth, float screenHeight);
+	static void		draw2DTopLayer(const glm::mat4& projection);
 
 	// adds a single debug line
 	static void		addLine(const glm::vec3& v0, const glm::vec3& v1, const glm::vec4& color);

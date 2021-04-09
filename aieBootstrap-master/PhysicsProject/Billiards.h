@@ -48,7 +48,7 @@ protected:
 	float m_radius = 2.5f;
 
 	// update variables	
-	bool turn;
+	bool turn = true;
 	bool turnUpdate;
 
 	// cue physics
