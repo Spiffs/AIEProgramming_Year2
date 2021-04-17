@@ -1,6 +1,7 @@
 #include "GraphicsProjectApp.h"
 #include "Gizmos.h"
 #include "Input.h"
+#include <iostream>
 
 #define GLM_ENABLE_EXPERIMENTAL 1
 
@@ -24,7 +25,8 @@ GraphicsProjectApp::GraphicsProjectApp()
 
 GraphicsProjectApp::~GraphicsProjectApp()
 {
-
+	delete m_Renderer2D;
+	delete m_font;
 }
 
 bool GraphicsProjectApp::startup()
@@ -38,6 +40,8 @@ bool GraphicsProjectApp::startup()
 	m_viewMatrix = glm::lookAt(glm::vec3(10), glm::vec3(0), glm::vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
+	m_Renderer2D = new aie::Renderer2D();
+	m_font = new aie::Font("../bin/font/SuperLegendBoy.ttf", 20);
 
 	Light light;
 	light.m_color = { 1, 1, 1 };
@@ -79,14 +83,38 @@ void GraphicsProjectApp::update(float deltaTime)
 
 	float time = getTime();
 
-	m_scene->SetLightDirection(glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0)));
+	//m_scene->SetLightDirection(glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0)));
 
 
-	// quit if we press escape
+	// get input instance
 	aie::Input* input = aie::Input::getInstance();
 
+	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
+
+
+
+	// debuging
+	if (input->isKeyUp(aie::INPUT_KEY_V))
+		m_debugTimer = true;
+
+	if (input->isKeyDown(aie::INPUT_KEY_V) && m_debugTimer)
+	{
+		m_debugTimer = false;
+		if (m_debug)
+			m_debug = false;
+		else
+			m_debug = true;
+	}
+
+
+	// Text GUI
+	m_Renderer2D->begin();
+	
+	m_Renderer2D->drawText(m_font, "Press V For Debug", 1, 1);
+
+	m_Renderer2D->end();
 }
 
 void GraphicsProjectApp::draw()
@@ -177,7 +205,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	//	return false;
 	//}
 
-	
+
 
 #pragma endregion
 
@@ -371,8 +399,66 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 void GraphicsProjectApp::IMGUI_Logic()
 {
-	ImGui::Begin("Scene Light Settings");
-	ImGui::DragFloat3("Sunlight Direction", &m_scene->GetLight().m_direction[0], 0.1f, -1.0f, 1.0f);
-	ImGui::DragFloat3("Sunlight Color", &m_scene->GetLight().m_color[0], 0.1f, 0.0f, 2.0f);
+	// scene light
+	// begin 
+	ImGui::Begin("Scene Light Settings", 0);
+
+	ImGui::Text("Sun Light");
+	// sunlight direciton
+	static glm::vec3 sunlightDirection(1, 1, 1);
+	ImGui::SliderFloat3("Sunlight Direction", &sunlightDirection.x, -1.0f, 1.0f);
+	m_scene->SetLightDirection(sunlightDirection);
+
+	// sunlight color
+	static glm::vec3 sunlightColor(1, 1, 1);
+	ImGui::SliderFloat3("Sunlight Color", &sunlightColor.x, 0.0f, 2.0f);
+	m_scene->SetLightColor(sunlightColor);
+
+	// point lights
+	ImGui::Text("");
+	ImGui::Text("Point Light 1");
+
+	// point light one
+	static glm::vec3 pointOnePosition(5, 3, 0);
+	ImGui::DragFloat3("Point Light One Position", &pointOnePosition.x);
+
+	static glm::vec3 pointOneColor(2, 0, 0);
+	ImGui::SliderFloat3("Point Light One Color", &pointOneColor.x, 0.0f, 2.0f);
+
+	m_scene->SetPointLightVariables(0, pointOnePosition, pointOneColor);
+
+	ImGui::Text("");
+	ImGui::Text("Point Light 2");
+
+	// point light two
+	static glm::vec3 pointTwoPosition(-5, 3, 0);
+	ImGui::DragFloat3("Point Light Two Position", &pointTwoPosition.x, -1.0f, 1.0f);
+
+	static glm::vec3 pointTwoColor(0, 2, 0);
+
+	ImGui::SliderFloat3("Point Light Two Color", &pointTwoColor.x, 0.0f, 2.0f);
+
+	m_scene->SetPointLightVariables(1, pointTwoPosition, pointTwoColor);
+
+
 	ImGui::End();
+
+
+	// debug logic 
+	if (m_debug)
+	{
+		// for each point light 
+		for (auto light : m_scene->GetPointLights())
+		{
+			glm::mat4 pointOneSphere = {
+			1,		0,     0,     0,
+			0,		1,     0,     0,
+			0,		0,	   1,     0,
+			light.m_direction.x, light.m_direction.y, light.m_direction.z, 1
+			};
+
+			Gizmos::addSphere(glm::vec3(0, 0, 0), 5, 10, 10, glm::vec4(light.m_color.x / 180, light.m_color.y / 180, light.m_color.z / 180, .4f), &pointOneSphere);
+		}
+	}
+
 }

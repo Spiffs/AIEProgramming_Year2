@@ -43,6 +43,7 @@ public:
 	Light GetLight() { return m_light; }
 	void SetLight(Light a_light) { m_light = a_light; }
 	void SetLightDirection(glm::vec3 a_direction) { m_light.m_direction = a_direction; }
+	void SetLightColor(glm::vec3 a_color) { m_light.m_color = a_color; }
 
 	glm::vec3 GetAmbientLight() { return m_ambientLight; }
 	void SetAmbientLight(glm::vec3 a_ambientLight) { m_ambientLight = a_ambientLight; }
@@ -50,6 +51,7 @@ public:
 	int GetNumLights() { return (int)m_pointLights.size(); }
 	glm::vec3* GetPointLightPositions() { return &m_pointLightPositions[0]; }
 	glm::vec3* GetPointLightColor() { return &m_pointLightColors[0]; }
+	void SetPointLightVariables(int lightNum, glm::vec3 a_pos, glm::vec3 a_color) { m_pointLights[lightNum].m_direction = a_pos; m_pointLights[lightNum].m_color = a_color * 50.0f; }
 
 	std::vector<Light>& GetPointLights() { return m_pointLights; }
 

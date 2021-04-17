@@ -49,7 +49,7 @@ protected:
 
 	// update variables	
 	bool turn = true;
-	bool turnUpdate;
+	bool turnUpdate = true;
 
 	// cue physics
 	glm::vec2 m_mousePosOnDown = glm::vec2(NULL);

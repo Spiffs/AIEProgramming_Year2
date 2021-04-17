@@ -8,6 +8,9 @@
 #include "Scene.h"
 #include "Instance.h"
 
+#include <Renderer2D.h>
+#include <Font.h>
+
 #include <glm/mat4x4.hpp>
 
 class GraphicsProjectApp : public aie::Application {
@@ -26,6 +29,12 @@ public:
 
 protected:
 	Camera m_camera;
+
+	bool m_debug = false;
+	bool m_debugTimer = false;
+
+	aie::Renderer2D* m_Renderer2D;
+	aie::Font* m_font;
 
 	// Camera transforms
 	glm::mat4	m_viewMatrix;

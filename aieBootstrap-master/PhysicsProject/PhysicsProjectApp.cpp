@@ -24,14 +24,14 @@ PhysicsProjectApp::~PhysicsProjectApp()
 bool PhysicsProjectApp::startup() {
 
 	// Increases 2D line coun to maximise the number of objects we can draw.
-	aie::Gizmos::create(255U, 255U, 65535U, 65535U);
+	aie::Gizmos::create(255U, 255U, 65535U, 65535U); 
 
 	m_2dRenderer = new aie::Renderer2D();
 
 	// TODO: remember to change this when redistributing a build!
 	// the following path would be used instead: "./font/consolas.ttf"
-	m_escapeFont = new aie::Font("../bin/font/consolas.ttf", 24);
-	m_fpsFont = new aie::Font("../bin/font/consolas.ttf", 12);
+	m_escapeFont = new aie::Font("font/consolas.ttf", 24);
+	m_fpsFont = new aie::Font("font/consolas.ttf", 12);
 
 	/*m_physicsScene = new PhysicsScene();*/
 	m_billiards = new Billiards(this);

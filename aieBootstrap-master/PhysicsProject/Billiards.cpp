@@ -42,10 +42,10 @@ void Billiards::StartUp()
 {
 #pragma region POINTER DEFINITIONS
 
-	m_fontSize11 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 11);
-	m_fontSize20 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 20);
-	m_fontSize30 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 30);
-	m_fontSize60 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 60);
+	m_fontSize11 = new aie::Font("font/SuperLegendBoy.ttf", 11);
+	m_fontSize20 = new aie::Font("font/SuperLegendBoy.ttf", 20);
+	m_fontSize30 = new aie::Font("font/SuperLegendBoy.ttf", 30);
+	m_fontSize60 = new aie::Font("font/SuperLegendBoy.ttf", 60);
 
 	// play area
 	m_backdrop = new Box(glm::vec2(0), glm::vec2(0), 0, 1000, 110, 60, glm::vec4(0, .5f, 0, 1));
