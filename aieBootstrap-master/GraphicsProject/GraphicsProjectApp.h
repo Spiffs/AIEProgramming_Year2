@@ -25,16 +25,19 @@ public:
 	virtual void update(float deltaTime);
 	virtual void draw();
 
-	void SolarSystem(float dt);
-
 protected:
 	Camera m_camera;
 
+	// debug variables
 	bool m_debug = false;
 	bool m_debugTimer = false;
 
+	// renderer and fonts
 	aie::Renderer2D* m_Renderer2D;
 	aie::Font* m_font;
+	aie::Font* m_fontSize12;
+	aie::Font* m_fontSize30;
+
 
 	// Camera transforms
 	glm::mat4	m_viewMatrix;

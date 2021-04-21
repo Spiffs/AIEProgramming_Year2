@@ -40,6 +40,8 @@ public:
 	glm::vec2 GetWindowSize() { return m_windowSize; }
 	void SetWindowSize(glm::vec2 a_windowSize) { m_windowSize = a_windowSize; }
 
+	void SetObjectTransform(int iterator, glm::vec3 a_position, glm::vec3 a_rotation, glm::vec3 a_scale);
+
 	Light GetLight() { return m_light; }
 	void SetLight(Light a_light) { m_light = a_light; }
 	void SetLightDirection(glm::vec3 a_direction) { m_light.m_direction = a_direction; }
@@ -62,7 +64,7 @@ protected:
 	Light m_sunLight;
 	std::vector<Light> m_pointLights;
 	glm::vec3 m_ambientLight;
-	std::list<Instance*> m_instances;
+	std::vector<Instance*> m_instances;
 
 	glm::vec3 m_pointLightPositions[MAX_LIGHTS];
 	glm::vec3 m_pointLightColors[MAX_LIGHTS];

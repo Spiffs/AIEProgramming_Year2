@@ -17,6 +17,7 @@ public:
 
 	void Update(float a_deltaTime);
 	glm::vec3 GetPosition() { return m_Cameras.at(m_cameraSelected).m_position; }
+	int GetSelectedCamera() { return m_cameraSelected; }
 
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix(float a_width, float a_height);

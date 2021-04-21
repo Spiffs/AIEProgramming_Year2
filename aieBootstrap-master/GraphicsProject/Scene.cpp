@@ -12,8 +12,8 @@ Scene::~Scene()
 	{
 		delete (*i);
 	}
-}
-
+} 
+ 
 void Scene::AddInstance(Instance* a_instance)
 {
 	m_instances.push_back(a_instance);
@@ -32,4 +32,10 @@ void Scene::Draw()
 		Instance* instance = *i;
 		instance->Draw(this);
 	}
+}
+
+// setting an objects transform
+void Scene::SetObjectTransform(int iterator, glm::vec3 a_position, glm::vec3 a_rotation, glm::vec3 a_scale)
+{
+	m_instances[iterator]->SetTransform(m_instances[iterator]->MakeTransform(a_position, a_rotation, a_scale));
 }

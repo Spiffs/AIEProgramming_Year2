@@ -26,7 +26,8 @@ GraphicsProjectApp::GraphicsProjectApp()
 GraphicsProjectApp::~GraphicsProjectApp()
 {
 	delete m_Renderer2D;
-	delete m_font;
+	delete m_fontSize12;
+	delete m_fontSize30;
 }
 
 bool GraphicsProjectApp::startup()
@@ -41,7 +42,8 @@ bool GraphicsProjectApp::startup()
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
 	m_Renderer2D = new aie::Renderer2D();
-	m_font = new aie::Font("../bin/font/SuperLegendBoy.ttf", 20);
+	m_fontSize12 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 12);
+	m_fontSize30 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 30);
 
 	Light light;
 	light.m_color = { 1, 1, 1 };
@@ -83,17 +85,12 @@ void GraphicsProjectApp::update(float deltaTime)
 
 	float time = getTime();
 
-	//m_scene->SetLightDirection(glm::normalize(glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0)));
-
-
 	// get input instance
 	aie::Input* input = aie::Input::getInstance();
 
 	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
-
-
 
 	// debuging
 	if (input->isKeyUp(aie::INPUT_KEY_V))
@@ -107,14 +104,6 @@ void GraphicsProjectApp::update(float deltaTime)
 		else
 			m_debug = true;
 	}
-
-
-	// Text GUI
-	m_Renderer2D->begin();
-	
-	m_Renderer2D->drawText(m_font, "Press V For Debug", 1, 1);
-
-	m_Renderer2D->end();
 }
 
 void GraphicsProjectApp::draw()
@@ -125,24 +114,23 @@ void GraphicsProjectApp::draw()
 	glm::mat4 projectionMatrix = m_camera.GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
 	glm::mat4 viewMatrix = m_camera.GetViewMatrix();
 
-	// update perspective based on screen size
-	// m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
+	// Text GUI
+	m_Renderer2D->begin();
 
-	//DrawShaderAndMeshes(projectionMatrix, viewMatrix);
+	m_Renderer2D->drawText(m_fontSize12, "Press V For Debug", 5, 5);
 
+	std::string s = std::to_string(m_camera.GetSelectedCamera() + 1);
+	const char* cameranum = s.c_str();
+	m_Renderer2D->drawText(m_fontSize30, "Camera: ", 5, 25);
+	m_Renderer2D->drawText(m_fontSize30, cameranum, 170, 25);
+
+	m_Renderer2D->end();
+
+
+	// rest of draw
 	m_scene->Draw();
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
-}
-
-void GraphicsProjectApp::SolarSystem(float dt)
-{
-	// Sun
-	Gizmos::addSphere(glm::vec3(0, 0, 0), 1.0f, 16, 16, glm::vec4(1, 0.8, 0, 1));
-
-	//Mercury
-	/*glm::vec3 mercuryPos = glm::rotate(10.0f, glm::vec3(2, 0, 0));*/
-	Gizmos::addSphere(glm::vec3(2, 0, 0), 0.15f, 16, 16, glm::vec4(1, 0.8, 0, 1));
 }
 
 bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
@@ -160,16 +148,6 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 		return false;
 	}
 
-	// Define the 6 vertices for the 2 triangles that make the quad
-	//Mesh::Vertex verticesNoIndex[6];
-	//verticesNoIndex[0].position = { -0.5f, 0.0f,  0.5f, 1.0f };
-	//verticesNoIndex[1].position = { 0.5f, 0.0f,  0.5f, 1.0f };
-	//verticesNoIndex[2].position = { -0.5f, 0.0f, -0.5f, 1.0f };
-
-	//verticesNoIndex[3].position = { -0.5f, 0.0f, -0.5f, 1.0f };
-	//verticesNoIndex[4].position = { 0.5f, 0.0f,  0.5f, 1.0f };
-	//verticesNoIndex[5].position = { 0.5f, 0.0f, -0.5f, 1.0f };
-
 	Mesh::Vertex vertices[4];
 	vertices[0].position = { -0.5f, 0.0f,  0.5f, 1.0f };
 	vertices[1].position = { 0.5f, 0.0f,  0.5f, 1.0f };
@@ -179,33 +157,6 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	unsigned int indices[6] = { 0, 1, 2, 2, 1, 3 };
 
 	m_quadMesh.InitialiseQuad();
-	//m_quadMesh.Initialise(6, vertices, 6, indices);
-
-	// We will make the quad 10 units by 10 units 
-	m_quadTransform = {
-		10,  0,  0,  0,
-		 0, 10,  0,  0,
-		 0,  0, 10,  0,
-		 0,  0,  0,  1
-	};
-
-	/*m_quadTransform = glm::rotate(m_quadTransform, glm::radians(90.0f), glm::vec3(1, 0, 0));*/
-
-#pragma endregion
-
-#pragma region FlatBunny
-	// Load the vertex shader from a file
-	//m_bunnyShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
-	//// Load the fragment shader from a file
-	//m_bunnyShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
-
-	//if (!m_bunnyShader.link())
-	//{
-	//	printf("Bunny Shader had an error: %s\n", m_bunnyShader.getLastError());
-	//	return false;
-	//}
-
-
 
 #pragma endregion
 
@@ -219,23 +170,23 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 		return false;
 	}
 
+#pragma endregion
+
+#pragma region BunnyLogic
+
 	if (m_bunnyMesh.load("./stanford/bunny.obj") == false)
 	{
 		printf("Bunny Mesh Failed!\n");
 		return false;
 	}
 
+	// bunny 
 	m_bunnyTransform = {
-		0.5f,     0,     0,  0,
-		   0,  0.5f,     0,  0,
-		   0,     0,  0.5f,  0,
-		  -10,     0,     0,  1
+	0.5f,     0,     0,  0,
+	   0,  0.5f,     0,  0,
+	   0,     0,  0.5f,  0,
+	  -10,     0,     0,  1
 	};
-
-#pragma endregion
-
-#pragma region TextureShader
-
 
 #pragma endregion
 
@@ -245,7 +196,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	m_normalMapShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/normalMap.frag");
 	if (m_normalMapShader.link() == false)
 	{
-		printf("Norma.lMap Shader had an error: %s\n", m_normalMapShader.getLastError());
+		printf("NormalMap Shader had an error: %s\n", m_normalMapShader.getLastError());
 		return false;
 	}
 
@@ -259,6 +210,14 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 		return false;
 	}
 
+	// We will make the quad 10 units by 10 units 
+	m_quadTransform = {
+		10,  0,  0,  0,
+		 0, 10,  0,  0,
+		 0,  0, 10,  0,
+		 0,  0,  0,  1
+	};
+
 #pragma endregion
 
 #pragma region SoulSpearLogic
@@ -270,11 +229,12 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 		return false;
 	}
 
+	// soulspear
 	m_soulspearTransform = {
-		0.5f,     0,     0,    0,
-		   0,  0.5f,     0,    0,
-		   0,     0,  0.5f,    0,
-		   0,     0,     0,    1
+	0.5f,     0,     0,    0,
+	   0,  0.5f,     0,    0,
+	   0,     0,  0.5f,    0,
+	   0,     0,     0,    1
 	};
 
 #pragma endregion
@@ -288,104 +248,25 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 		return false;
 	}
 
+	// grenade
 	m_grenadeTransform = {
-		25,     0,     0,    0,
-		 0,    25,     0,    0,
-		 0,     0,    25,    0,
-		 0,     0.5f,    -5,    1
+	25,     0,     0,    0,
+	 0,    25,     0,    0,
+	 0,     0,    25,    0,
+	 0,     0.5f,    -5,    1
 	};
 
 #pragma endregion
 
-#pragma region DragonShader
-	m_dragonShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
-
-	// Load the fragment shader from a file
-	m_dragonShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
-
-	if (!m_dragonShader.link())
-	{
-		printf("Dragon Shader had an error: %s\n", m_dragonShader.getLastError());
-		return false;
-	}
-
-	if (m_dragonMesh.load("./stanford/dragon.obj") == false)
-	{
-		printf("Dragon Mesh Failed!\n");
-		return false;
-	}
-
-	m_dragonTransform = {
-		0.5f,     0,     0,  0,
-		   0,  0.5f,     0,  0,
-		   0,     0,  0.5f,  0,
-		   0,     0,     7,  1
-	};
-
-
-#pragma endregion
-
-#pragma region BuddhShader
-	m_buddhaShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
-
-	// Load the fragment shader from a file
-	m_buddhaShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
-
-	if (!m_buddhaShader.link())
-	{
-		printf("Buddha Shader had an error: %s\n", m_buddhaShader.getLastError());
-		return false;
-	}
-
-	if (m_buddhaMesh.load("./stanford/buddha.obj") == false)
-	{
-		printf("Buddha Mesh Failed!\n");
-		return false;
-	}
-
-	m_buddhaTransform = {
-		0.5f,     0,     0,  0,
-		   0,  0.5f,     0,  0,
-		   0,     0,  0.5f,  0,
-		   0,     0,     -7,  1
-	};
-#pragma endregion
-
-#pragma region LucyShader
-	m_lucyShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
-
-	// Load the fragment shader from a file
-	m_lucyShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
-
-	if (!m_lucyShader.link())
-	{
-		printf("Lucy Shader had an error: %s\n", m_lucyShader.getLastError());
-		return false;
-	}
-
-	if (m_lucyMesh.load("./stanford/lucy.obj") == false)
-	{
-		printf("Lucy Mesh Failed!\n");
-		return false;
-	}
-
-	m_lucyTransform = {
-		0.5f,     0,     0,  0,
-		   0,  0.5f,     0,  0,
-		   0,     0,  0.5f,  0,
-		  7,     0,     0,  1
-	};
-#pragma endregion
-
-
-	// creating SoulSpears
 	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
 
+	// creating soulspear
 	m_scene->AddInstance(new Instance(m_soulspearTransform, &m_soulspearMesh, &m_normalMapShader));
 
 	// creating a granade
 	m_scene->AddInstance(new Instance(m_grenadeTransform, &m_grenadeMesh, &m_normalMapShader));
 
+	// creating bunny
 	m_scene->AddInstance(new Instance(m_bunnyTransform, &m_bunnyMesh, &m_phongShader));
 
 	// creating lights
@@ -399,8 +280,8 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 void GraphicsProjectApp::IMGUI_Logic()
 {
-	// scene light
-	// begin 
+#pragma region ImGui Lights
+
 	ImGui::Begin("Scene Light Settings", 0);
 
 	ImGui::Text("Sun Light");
@@ -415,6 +296,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 	m_scene->SetLightColor(sunlightColor);
 
 	// point lights
+	ImGui::Separator();
 	ImGui::Text("");
 	ImGui::Text("Point Light 1");
 
@@ -440,9 +322,91 @@ void GraphicsProjectApp::IMGUI_Logic()
 
 	m_scene->SetPointLightVariables(1, pointTwoPosition, pointTwoColor);
 
+	ImGui::End();
+
+#pragma endregion
+
+#pragma region ImGui Objects
+
+	ImGui::Begin("Objects");
+
+	if (ImGui::CollapsingHeader("Bunny"))
+	{
+		// vec3 for each position, rotation and scale
+		static glm::vec3 bunny_Position;
+		static glm::quat bunny_RotationQ;
+		static glm::vec3 bunny_Scale;
+		
+		// things we don't use...
+		glm::vec3 skew; glm::vec4 perspective;
+		
+		// decomposing the current transform for the bunny
+		glm::decompose(m_bunnyTransform, bunny_Scale, bunny_RotationQ, bunny_Position, skew, perspective);
+
+		// convert quaternion to euler for rotation
+		static glm::vec3 bunny_RotationE = glm::eulerAngles(bunny_RotationQ) * 3.14159f / 180.f;
+
+		// ImGui
+		ImGui::DragFloat3("Bunny Position", &bunny_Position.x, 0, 1);
+		ImGui::DragFloat3("Bunny Rotation", &bunny_RotationE.x, 0, 1);
+		ImGui::DragFloat3("Bunny Scale", &bunny_Scale.x, 0, 1);
+
+		m_scene->SetObjectTransform(2, bunny_Position, bunny_RotationE, bunny_Scale);
+	}
+
+	if (ImGui::CollapsingHeader("Soulspear"))
+	{
+		// vec3 for each position, rotation and scale
+		static glm::vec3 soulspear_Position;
+		static glm::quat soulspear_RotationQ;
+		static glm::vec3 soulspear_Scale;
+
+		// things we don't use...
+		glm::vec3 skew; glm::vec4 perspective;
+
+		// decomposing the current transform for the soulspear
+		glm::decompose(m_soulspearTransform, soulspear_Scale, soulspear_RotationQ, soulspear_Position, skew, perspective);
+
+		// convert quaternion to euler for rotation
+		static glm::vec3 soulspear_RotationE = glm::eulerAngles(soulspear_RotationQ) * 3.14159f / 180.f;
+
+		// ImGui
+		ImGui::DragFloat3("Soulspear Position", &soulspear_Position.x, 0, 1);
+		ImGui::DragFloat3("Soulspear Rotation", &soulspear_RotationE.x, 0, 1);
+		ImGui::DragFloat3("Soulspear Scale", &soulspear_Scale.x, 0, 1);
+
+		m_scene->SetObjectTransform(0, soulspear_Position, soulspear_RotationE, soulspear_Scale);
+	}
+
+	if (ImGui::CollapsingHeader("Grenade"))
+	{
+		// vec3 for each position, rotation and scale
+		static glm::vec3 grenade_Position;
+		static glm::quat grenade_RotationQ;
+		static glm::vec3 grenade_Scale;
+
+		// things we don't use...
+		glm::vec3 skew; glm::vec4 perspective;
+
+		// decomposing the current transform for the grenade
+		glm::decompose(m_grenadeTransform, grenade_Scale, grenade_RotationQ, grenade_Position, skew, perspective);
+
+		// convert quaternion to euler for rotation
+		static glm::vec3 grenade_RotationE = glm::eulerAngles(grenade_RotationQ) * 3.14159f / 180.f;
+
+		// ImGui
+		ImGui::DragFloat3("Grenade Position", &grenade_Position.x, 0, 1);
+		ImGui::DragFloat3("Grenade Rotation", &grenade_RotationE.x, 0, 1);
+		ImGui::DragFloat3("Grenade Scale", &grenade_Scale.x, 0, 1);
+
+		m_scene->SetObjectTransform(1, grenade_Position, grenade_RotationE, grenade_Scale);
+	}
 
 	ImGui::End();
 
+#pragma endregion
+
+#pragma region Debug
 
 	// debug logic 
 	if (m_debug)
@@ -460,5 +424,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 			Gizmos::addSphere(glm::vec3(0, 0, 0), 5, 10, 10, glm::vec4(light.m_color.x / 180, light.m_color.y / 180, light.m_color.z / 180, .4f), &pointOneSphere);
 		}
 	}
+
+#pragma endregion
 
 }
