@@ -351,7 +351,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 		ImGui::DragFloat3("Bunny Rotation", &bunny_RotationE.x, 0, 1);
 		ImGui::DragFloat3("Bunny Scale", &bunny_Scale.x, 0, 1);
 
-		m_scene->SetObjectTransform(2, bunny_Position, bunny_RotationE, bunny_Scale);
+		m_bunnyTransform = m_scene->SetObjectTransform(2, bunny_Position, bunny_RotationE * 8, bunny_Scale);
 	}
 
 	if (ImGui::CollapsingHeader("Soulspear"))
@@ -375,7 +375,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 		ImGui::DragFloat3("Soulspear Rotation", &soulspear_RotationE.x, 0, 1);
 		ImGui::DragFloat3("Soulspear Scale", &soulspear_Scale.x, 0, 1);
 
-		m_scene->SetObjectTransform(0, soulspear_Position, soulspear_RotationE, soulspear_Scale);
+		m_soulspearTransform = m_scene->SetObjectTransform(0, soulspear_Position, soulspear_RotationE * 8, soulspear_Scale);
 	}
 
 	if (ImGui::CollapsingHeader("Grenade"))
@@ -399,7 +399,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 		ImGui::DragFloat3("Grenade Rotation", &grenade_RotationE.x, 0, 1);
 		ImGui::DragFloat3("Grenade Scale", &grenade_Scale.x, 0, 1);
 
-		m_scene->SetObjectTransform(1, grenade_Position, grenade_RotationE, grenade_Scale);
+		m_grenadeTransform = m_scene->SetObjectTransform(1, grenade_Position, grenade_RotationE * 8, grenade_Scale);
 	}
 
 	ImGui::End();

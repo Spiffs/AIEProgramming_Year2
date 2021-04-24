@@ -35,7 +35,7 @@ void Scene::Draw()
 }
 
 // setting an objects transform
-void Scene::SetObjectTransform(int iterator, glm::vec3 a_position, glm::vec3 a_rotation, glm::vec3 a_scale)
+glm::mat4 Scene::SetObjectTransform(int iterator, glm::vec3 a_position, glm::vec3 a_rotation, glm::vec3 a_scale)
 {
-	m_instances[iterator]->SetTransform(m_instances[iterator]->MakeTransform(a_position, a_rotation, a_scale));
+	return m_instances[iterator]->SetTransform(m_instances[iterator]->MakeTransform(a_position, a_rotation, a_scale));
 }

@@ -13,25 +13,25 @@ Camera::Camera()
 	CameraPosition CameraView2;
 	CameraView2.m_position = glm::vec3(20, 5, 20);
 	CameraView2.m_theta = 225;
-	CameraView2.m_phi = -15;
+	CameraView2.m_phi = -8;
 	m_Cameras.push_back(CameraView2);
 
 	CameraPosition CameraView3;										//BROKEN
 	CameraView3.m_position = glm::vec3(20, 5, -20);
 	CameraView3.m_theta = 135;
-	CameraView3.m_phi = -15;
+	CameraView3.m_phi = -8;
 	m_Cameras.push_back(CameraView3);
 
 	CameraPosition CameraView4;
 	CameraView4.m_position = glm::vec3(-20, 5, -20);
 	CameraView4.m_theta = 45;
-	CameraView4.m_phi = -15;
+	CameraView4.m_phi = -8;
 	m_Cameras.push_back(CameraView4);
 
 	CameraPosition CameraView5;										//BROKEN
 	CameraView5.m_position = glm::vec3(-20, 5, 20);
 	CameraView5.m_theta = 315;
-	CameraView5.m_phi = -15;
+	CameraView5.m_phi = -8;
 	m_Cameras.push_back(CameraView5);
 }
 

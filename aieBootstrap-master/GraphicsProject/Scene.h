@@ -40,7 +40,7 @@ public:
 	glm::vec2 GetWindowSize() { return m_windowSize; }
 	void SetWindowSize(glm::vec2 a_windowSize) { m_windowSize = a_windowSize; }
 
-	void SetObjectTransform(int iterator, glm::vec3 a_position, glm::vec3 a_rotation, glm::vec3 a_scale);
+	glm::mat4 SetObjectTransform(int iterator, glm::vec3 a_position, glm::vec3 a_rotation, glm::vec3 a_scale);
 
 	Light GetLight() { return m_light; }
 	void SetLight(Light a_light) { m_light = a_light; }
