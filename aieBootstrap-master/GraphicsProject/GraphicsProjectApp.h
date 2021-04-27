@@ -56,6 +56,7 @@ protected:
 	aie::ShaderProgram m_grenadeShader;
 	aie::ShaderProgram m_phongShader;
 	aie::ShaderProgram m_normalMapShader;
+	
 	// --------------
 	// Basic Plane
 	Mesh m_quadMesh;
@@ -79,19 +80,18 @@ protected:
 	aie::OBJMesh m_grenadeMesh;
 	glm::mat4 m_grenadeTransform;
 
+	// post processing mesh, shader and transform
+	Mesh m_postProcessingQuad;
+	aie::ShaderProgram m_postProcessingShader;
+	glm::mat4 m_postProcessingTransform;
+
+	// turn on and off post processing 
+	bool m_postProcessingEnabled = false;
+	bool m_postProcessingTimer = false;
+
 	Scene* m_scene;
-
-	/*struct Light
-	{
-		glm::vec3 direciton;
-		glm::vec3 color; 
-	};
-
-	Light m_light;
-	glm::vec3 m_ambientLight;*/
 
 public:
 	bool LoadShaderAndMeshLogic(Light a_light);
-	//void DrawShaderAndMeshes(glm::mat4, glm::mat4);
 	void IMGUI_Logic();
 };

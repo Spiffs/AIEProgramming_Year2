@@ -104,6 +104,19 @@ void GraphicsProjectApp::update(float deltaTime)
 		else
 			m_debug = true;
 	}
+
+	// post processing :)
+	if (input->isKeyUp(aie::INPUT_KEY_B))
+		m_postProcessingTimer = true;
+
+	if (input->isKeyDown(aie::INPUT_KEY_B) && m_postProcessingTimer)
+	{
+		m_postProcessingTimer = false;
+		if (m_postProcessingEnabled)
+			m_postProcessingEnabled = false;
+		else
+			m_postProcessingEnabled = true;
+	}
 }
 
 void GraphicsProjectApp::draw()
@@ -126,15 +139,46 @@ void GraphicsProjectApp::draw()
 
 	m_Renderer2D->end();
 
-
 	// rest of draw
 	m_scene->Draw();
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
+
+	if (m_postProcessingEnabled)
+	{
+		// clear the back buffer
+		clearScreen();
+
+		// bindpost shader and textures
+		m_postProcessingShader.bind();
+		m_postProcessingShader.bindUniform("colourTarget", 0);
+		//m_Renderer2D.getTarget(0).bind(0);
+		
+		// draw fullscreen quad
+		m_postProcessingQuad.Draw();
+	}
 }
 
 bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 {
+#pragma region PostProcessing
+
+	m_postProcessingQuad.initialiseFullscreenQuad();
+
+	// loading the post process vertex shader
+	m_postProcessingShader.loadShader(aie::eShaderStage::VERTEX, "../bin/shaders/post.vert");
+	
+	// loading the post process fragment shader
+	m_postProcessingShader.loadShader(aie::eShaderStage::FRAGMENT, "../bin/shaders/post.frag");
+
+	if (!m_postProcessingShader.link())
+	{
+		printf("Post Process shader had an error : %s\n", m_postProcessingShader.getLastError());
+		return false;
+	}
+
+#pragma endregion
+
 #pragma region Quad
 	// Load the vertex shader from a file
 	m_simpleShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
@@ -259,6 +303,8 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 #pragma endregion
 
 	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
+
+
 
 	// creating soulspear
 	m_scene->AddInstance(new Instance(m_soulspearTransform, &m_soulspearMesh, &m_normalMapShader));
