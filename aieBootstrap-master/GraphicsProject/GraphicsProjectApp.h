@@ -7,6 +7,7 @@
 #include "OBJMesh.h"
 #include "Scene.h"
 #include "Instance.h"
+#include "RenderTarget.h"
 
 #include <Renderer2D.h>
 #include <Font.h>
@@ -90,6 +91,8 @@ protected:
 	bool m_postProcessingTimer = false;
 
 	Scene* m_scene;
+
+	aie::RenderTarget* m_renderTarget;
 
 public:
 	bool LoadShaderAndMeshLogic(Light a_light);

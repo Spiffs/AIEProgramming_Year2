@@ -11,8 +11,37 @@ out vec4 FragColour;
 vec4 Default(vec2 texCoord) {
     return texture( colourTarget, texCoord );
 }
+
+// simple distort
+vec4 Distort(vec2 texCoord) {
+    vec2 mid = vec2(0.5f); 
+
+    float distanceFromCentre = distance(texCoord, mid);
+    vec2 normalizedCoord = normalize(texCoord -mid);
+    float bias = distanceFromCentre + sin(distanceFromCentre * 15) * 0.05f;
     
-voidmain() {
+    vec2 newCoord = mid + bias * normalizedCoord;
+    return texture(colourTarget, newCoord);
+}
+    
+// simple box blur
+vec4 BoxBlur(vec2 texCoord) {
+    vec2 texel = 1.0f / textureSize(colourTarget, 0); 
+
+    // 9-tap box kernel
+    vec4 colour = texture(colourTarget, texCoord); 
+    colour += texture(colourTarget, texCoord + texel * vec2(-1,1)); 
+    colour += texture(colourTarget, texCoord + texel * vec2(-1,0)); 
+    colour += texture(colourTarget, texCoord + texel * vec2(-1,-1)); 
+    colour += texture(colourTarget, texCoord + texel * vec2(0,1)); 
+    colour += texture(colourTarget, texCoord + texel * vec2(0,-1)); 
+    colour += texture(colourTarget, texCoord + texel * vec2(1,1)); 
+    colour += texture(colourTarget, texCoord + texel * vec2(1,0)); 
+    colour += texture(colourTarget, texCoord + texel * vec2(1,-1));
+    
+    return colour / 9; }
+
+void main() {
 
     // calculate texel size
     vec2 texSize = textureSize( colourTarget, 0);

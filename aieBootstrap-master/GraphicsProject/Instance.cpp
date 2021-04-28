@@ -28,7 +28,7 @@ Instance::Instance(glm::vec3 a_position, aie::OBJMesh* a_mesh, aie::ShaderProgra
 	m_transform = MakeTransform(a_position, glm::vec3(0), glm::vec3(1, 1, 1));
 }
 
-void Instance::Draw(Scene* a_scene)
+void Instance::Draw(Scene* a_scene, aie::RenderTarget* a_renderTarget)
 {
 #pragma region NewInstance
 	// Bind the shader
@@ -48,6 +48,8 @@ void Instance::Draw(Scene* a_scene)
 	m_shader->bindUniform("numLights", numLights);	
 	m_shader->bindUniform("PointLightColor", numLights, a_scene->GetPointLightColor());
 	m_shader->bindUniform("PointLightPosition", numLights, a_scene->GetPointLightPositions());
+
+	a_renderTarget->getTarget(0).bind(0);
 
 	// draw the objects mesh
 	m_mesh->draw();

@@ -24,7 +24,8 @@ GraphicsProjectApp::GraphicsProjectApp()
 }
 
 GraphicsProjectApp::~GraphicsProjectApp()
-{
+{	
+	//delete m_renderTarget;
 	delete m_Renderer2D;
 	delete m_fontSize12;
 	delete m_fontSize30;
@@ -41,6 +42,7 @@ bool GraphicsProjectApp::startup()
 	m_viewMatrix = glm::lookAt(glm::vec3(10), glm::vec3(0), glm::vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
+	m_renderTarget = new aie::RenderTarget();
 	m_Renderer2D = new aie::Renderer2D();
 	m_fontSize12 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 12);
 	m_fontSize30 = new aie::Font("../bin/font/SuperLegendBoy.ttf", 30);
@@ -121,6 +123,9 @@ void GraphicsProjectApp::update(float deltaTime)
 
 void GraphicsProjectApp::draw()
 {
+	// bind the render target
+	m_renderTarget->bind();
+
 	// wipe the screen to the background colour
 	clearScreen();
 
@@ -142,8 +147,6 @@ void GraphicsProjectApp::draw()
 	// rest of draw
 	m_scene->Draw();
 
-	Gizmos::draw(projectionMatrix * viewMatrix);
-
 	if (m_postProcessingEnabled)
 	{
 		// clear the back buffer
@@ -152,15 +155,36 @@ void GraphicsProjectApp::draw()
 		// bindpost shader and textures
 		m_postProcessingShader.bind();
 		m_postProcessingShader.bindUniform("colourTarget", 0);
-		//m_Renderer2D.getTarget(0).bind(0);
-		
+		m_renderTarget->getTarget(0).bind(0);
+
 		// draw fullscreen quad
 		m_postProcessingQuad.Draw();
 	}
+
+	// unbind the render target and return to backbuffer 
+	m_renderTarget->unbind();
+
+	// clear screen once more
+	clearScreen();
+
+	Gizmos::draw(projectionMatrix * viewMatrix);
+
+
 }
 
 bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 {
+#pragma region RenderTarget
+
+	if (m_renderTarget->initialise(1, getWindowWidth(), getWindowHeight()) == false)
+	{ 
+		printf("Render Target Error!\n"); 
+		return false; 
+	}
+
+#pragma endregion
+
+
 #pragma region PostProcessing
 
 	m_postProcessingQuad.initialiseFullscreenQuad();
@@ -302,9 +326,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma endregion
 
-	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
-
-
+	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f), m_renderTarget);
 
 	// creating soulspear
 	m_scene->AddInstance(new Instance(m_soulspearTransform, &m_soulspearMesh, &m_normalMapShader));

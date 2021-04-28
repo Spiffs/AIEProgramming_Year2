@@ -2,7 +2,7 @@
 #include <list>
 #include <vector>
 #include <glm/glm.hpp>
-
+#include "RenderTarget.h"
 const static int MAX_LIGHTS = 4;
 
 class Camera;
@@ -28,6 +28,7 @@ class Scene
 {
 public:
 	Scene(Camera* a_camera, glm::vec2 a_windowSize, Light& a_light, glm::vec3 a_ambientLight);
+	Scene(Camera* a_camera, glm::vec2 a_windowSize, Light& a_light, glm::vec3 a_ambientLight, aie::RenderTarget* a_renderTarget);
 	~Scene();
 
 	void AddInstance(Instance* a_instance);
@@ -40,6 +41,8 @@ public:
 	glm::vec2 GetWindowSize() { return m_windowSize; }
 	void SetWindowSize(glm::vec2 a_windowSize) { m_windowSize = a_windowSize; }
 
+	// set an exact objects transform from m_instances
+	// returns a mat4 t  
 	glm::mat4 SetObjectTransform(int iterator, glm::vec3 a_position, glm::vec3 a_rotation, glm::vec3 a_scale);
 
 	Light GetLight() { return m_light; }
@@ -68,5 +71,7 @@ protected:
 
 	glm::vec3 m_pointLightPositions[MAX_LIGHTS];
 	glm::vec3 m_pointLightColors[MAX_LIGHTS];
+
+	aie::RenderTarget* m_renderTarget;
 };
 
