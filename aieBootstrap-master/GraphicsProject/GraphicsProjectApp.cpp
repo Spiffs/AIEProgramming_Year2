@@ -24,8 +24,8 @@ GraphicsProjectApp::GraphicsProjectApp()
 }
 
 GraphicsProjectApp::~GraphicsProjectApp()
-{	
-	//delete m_renderTarget;
+{
+	delete m_renderTarget;
 	delete m_Renderer2D;
 	delete m_fontSize12;
 	delete m_fontSize30;
@@ -37,10 +37,6 @@ bool GraphicsProjectApp::startup()
 
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
-
-	// create simple camera transforms
-	m_viewMatrix = glm::lookAt(glm::vec3(10), glm::vec3(0), glm::vec3(0, 1, 0));
-	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
 	m_renderTarget = new aie::RenderTarget();
 	m_Renderer2D = new aie::Renderer2D();
@@ -87,6 +83,8 @@ void GraphicsProjectApp::update(float deltaTime)
 
 	float time = getTime();
 
+#pragma region Inputs
+
 	// get input instance
 	aie::Input* input = aie::Input::getInstance();
 
@@ -94,7 +92,7 @@ void GraphicsProjectApp::update(float deltaTime)
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
-	// debuging
+	// debuging toggle 
 	if (input->isKeyUp(aie::INPUT_KEY_V))
 		m_debugTimer = true;
 
@@ -107,7 +105,7 @@ void GraphicsProjectApp::update(float deltaTime)
 			m_debug = true;
 	}
 
-	// post processing :)
+	// post processing toggle :)
 	if (input->isKeyUp(aie::INPUT_KEY_B))
 		m_postProcessingTimer = true;
 
@@ -119,15 +117,20 @@ void GraphicsProjectApp::update(float deltaTime)
 		else
 			m_postProcessingEnabled = true;
 	}
+
+#pragma endregion
+
 }
 
 void GraphicsProjectApp::draw()
 {
-	// bind the render target
-	m_renderTarget->bind();
-
-	// wipe the screen to the background colour
-	clearScreen();
+	if (m_postProcessingEnabled)
+	{
+		// bind the render target
+		m_renderTarget->bind();
+	}
+		// wipe the screen to the background colour
+		clearScreen();
 
 	glm::mat4 projectionMatrix = m_camera.GetProjectionMatrix(getWindowWidth(), (float)getWindowHeight());
 	glm::mat4 viewMatrix = m_camera.GetViewMatrix();
@@ -135,66 +138,87 @@ void GraphicsProjectApp::draw()
 	// Text GUI
 	m_Renderer2D->begin();
 
+	m_Renderer2D->drawText(m_fontSize12, "Press B For Post Processing", 5, 35);
+
+	m_Renderer2D->drawText(m_fontSize12, "Press C To Change Camera", 5, 20);
+
 	m_Renderer2D->drawText(m_fontSize12, "Press V For Debug", 5, 5);
 
 	std::string s = std::to_string(m_camera.GetSelectedCamera() + 1);
 	const char* cameranum = s.c_str();
-	m_Renderer2D->drawText(m_fontSize30, "Camera: ", 5, 25);
-	m_Renderer2D->drawText(m_fontSize30, cameranum, 170, 25);
+	m_Renderer2D->drawText(m_fontSize30, "Camera: ", 5, 50);
+	m_Renderer2D->drawText(m_fontSize30, cameranum, 170, 50);
 
 	m_Renderer2D->end();
 
 	// rest of draw
 	m_scene->Draw();
 
+#pragma region PostProcessingLogic
+
 	if (m_postProcessingEnabled)
-	{
-		// clear the back buffer
+	{		//unbind the render target and return to backbuffer 
+		m_renderTarget->unbind();
+
+		//clear screen once more
 		clearScreen();
 
-		// bindpost shader and textures
+		// bind post shader and textures
 		m_postProcessingShader.bind();
 		m_postProcessingShader.bindUniform("colourTarget", 0);
+		// bind the target render to the post process shader texture as colorTarget
 		m_renderTarget->getTarget(0).bind(0);
 
 		// draw fullscreen quad
 		m_postProcessingQuad.Draw();
 	}
 
-	// unbind the render target and return to backbuffer 
-	m_renderTarget->unbind();
-
-	// clear screen once more
-	clearScreen();
+#pragma endregion
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
-
-
 }
 
 bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 {
-#pragma region RenderTarget
+#pragma region TextureShader
 
-	if (m_renderTarget->initialise(1, getWindowWidth(), getWindowHeight()) == false)
-	{ 
-		printf("Render Target Error!\n"); 
-		return false; 
+	// loading the post process texture vertex shader
+	m_textureShader.loadShader(aie::eShaderStage::VERTEX, "../bin/shaders/texture.vert");
+
+	// loading the post process texture fragment shader
+	m_textureShader.loadShader(aie::eShaderStage::FRAGMENT, "../bin/shaders/texture.frag");
+
+	if (!m_textureShader.link())
+	{
+		printf("Texture shader had an error : %s\n", m_textureShader.getLastError());
+		return false;
 	}
 
 #pragma endregion
 
+#pragma region RenderTarget
+
+	// initialising the render target to the screen width and height
+	if (m_renderTarget->initialise(1, getWindowWidth(), getWindowHeight()) == false)
+	{
+		printf("Render Target Error!\n");
+		return false;
+	}
+
+#pragma endregion
 
 #pragma region PostProcessing
 
+	// initialise the fullscreen quad for post processing
 	m_postProcessingQuad.initialiseFullscreenQuad();
-
+	
 	// loading the post process vertex shader
 	m_postProcessingShader.loadShader(aie::eShaderStage::VERTEX, "../bin/shaders/post.vert");
-	
+
 	// loading the post process fragment shader
 	m_postProcessingShader.loadShader(aie::eShaderStage::FRAGMENT, "../bin/shaders/post.frag");
 
+	// if fail to link
 	if (!m_postProcessingShader.link())
 	{
 		printf("Post Process shader had an error : %s\n", m_postProcessingShader.getLastError());
@@ -203,33 +227,9 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma endregion
 
-#pragma region Quad
-	// Load the vertex shader from a file
-	m_simpleShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/simple.vert");
-
-	// Load the fragment shader from a file
-	m_simpleShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/simple.frag");
-
-	if (!m_simpleShader.link())
-	{
-		printf("Simple Shader had an error: %s\n", m_simpleShader.getLastError());
-		return false;
-	}
-
-	Mesh::Vertex vertices[4];
-	vertices[0].position = { -0.5f, 0.0f,  0.5f, 1.0f };
-	vertices[1].position = { 0.5f, 0.0f,  0.5f, 1.0f };
-	vertices[2].position = { -0.5f, 0.0f, -0.5f, 1.0f };
-	vertices[3].position = { 0.5f, 0.0f, -0.5f, 1.0f };
-
-	unsigned int indices[6] = { 0, 1, 2, 2, 1, 3 };
-
-	m_quadMesh.InitialiseQuad();
-
-#pragma endregion
-
 #pragma region PhongShader
 
+	// phone shader file linking
 	m_phongShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/phong.vert");
 	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/phong.frag");
 	if (m_phongShader.link() == false)
@@ -242,6 +242,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma region BunnyLogic
 
+	// bunny obj linking
 	if (m_bunnyMesh.load("./stanford/bunny.obj") == false)
 	{
 		printf("Bunny Mesh Failed!\n");
@@ -260,6 +261,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma region NormalMapShader
 
+	// normal map shader linking
 	m_normalMapShader.loadShader(aie::eShaderStage::VERTEX, "./shaders/normalMap.vert");
 	m_normalMapShader.loadShader(aie::eShaderStage::FRAGMENT, "./shaders/normalMap.frag");
 	if (m_normalMapShader.link() == false)
@@ -272,6 +274,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma region GridLogic
 
+	// grid quad texture
 	if (m_gridTexture.load("./textures/numbered_grid.tga") == false)
 	{
 		printf("Failed to load: numbered_grid.tga\n");
@@ -290,7 +293,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma region SoulSpearLogic
 
-	// object
+	// soul spear mesh loading
 	if (m_soulspearMesh.load("./soulspear/soulspear.obj", true, true) == false)
 	{
 		printf("Soulspear Mesh Failed!\n");
@@ -309,7 +312,7 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma region GrenadeLogic
 
-	// loading object
+	// grenade mesh loading 
 	if (m_grenadeMesh.load("./stanford/Grenade/Hand_Grenade.obj", true, true) == false)
 	{
 		printf("Grenade Mesh Failed!\n");
@@ -326,7 +329,10 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 
 #pragma endregion
 
-	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f), m_renderTarget);
+#pragma region AddingToScene
+
+	// create the sceen using the cameras and window size, as well as lights
+	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), a_light, glm::vec3(0.25f));
 
 	// creating soulspear
 	m_scene->AddInstance(new Instance(m_soulspearTransform, &m_soulspearMesh, &m_normalMapShader));
@@ -343,6 +349,8 @@ bool GraphicsProjectApp::LoadShaderAndMeshLogic(Light a_light)
 	// creating a green light
 	m_scene->GetPointLights().push_back(Light(vec3(-5, 3, 0), vec3(0, 1, 0), 50));
 
+#pragma endregion
+
 	return true;
 }
 
@@ -350,6 +358,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 {
 #pragma region ImGui Lights
 
+	// creating window for scene lights
 	ImGui::Begin("Scene Light Settings", 0);
 
 	ImGui::Text("Sun Light");
@@ -396,6 +405,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 
 #pragma region ImGui Objects
 
+	// window for object transforms
 	ImGui::Begin("Objects");
 
 	if (ImGui::CollapsingHeader("Bunny"))
@@ -404,10 +414,10 @@ void GraphicsProjectApp::IMGUI_Logic()
 		static glm::vec3 bunny_Position;
 		static glm::quat bunny_RotationQ;
 		static glm::vec3 bunny_Scale;
-		
+
 		// things we don't use...
 		glm::vec3 skew; glm::vec4 perspective;
-		
+
 		// decomposing the current transform for the bunny
 		glm::decompose(m_bunnyTransform, bunny_Scale, bunny_RotationQ, bunny_Position, skew, perspective);
 
@@ -419,6 +429,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 		ImGui::DragFloat3("Bunny Rotation", &bunny_RotationE.x, 0, 1);
 		ImGui::DragFloat3("Bunny Scale", &bunny_Scale.x, 0, 1);
 
+		// set the objects transform
 		m_bunnyTransform = m_scene->SetObjectTransform(2, bunny_Position, bunny_RotationE * 8, bunny_Scale);
 	}
 
@@ -443,6 +454,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 		ImGui::DragFloat3("Soulspear Rotation", &soulspear_RotationE.x, 0, 1);
 		ImGui::DragFloat3("Soulspear Scale", &soulspear_Scale.x, 0, 1);
 
+		// set the objects transform
 		m_soulspearTransform = m_scene->SetObjectTransform(0, soulspear_Position, soulspear_RotationE * 8, soulspear_Scale);
 	}
 
@@ -467,6 +479,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 		ImGui::DragFloat3("Grenade Rotation", &grenade_RotationE.x, 0, 1);
 		ImGui::DragFloat3("Grenade Scale", &grenade_Scale.x, 0, 1);
 
+		// set the objects transform
 		m_grenadeTransform = m_scene->SetObjectTransform(1, grenade_Position, grenade_RotationE * 8, grenade_Scale);
 	}
 
@@ -489,6 +502,7 @@ void GraphicsProjectApp::IMGUI_Logic()
 			light.m_direction.x, light.m_direction.y, light.m_direction.z, 1
 			};
 
+			// create a sphere for each light debug of the same color
 			Gizmos::addSphere(glm::vec3(0, 0, 0), 5, 10, 10, glm::vec4(light.m_color.x / 180, light.m_color.y / 180, light.m_color.z / 180, .4f), &pointOneSphere);
 		}
 	}

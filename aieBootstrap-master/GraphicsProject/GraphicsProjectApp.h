@@ -49,10 +49,8 @@ protected:
 
 	// --- SHADER ---
 	aie::ShaderProgram m_simpleShader;	
+	aie::ShaderProgram m_textureShader;
 	aie::ShaderProgram m_bunnyShader;
-	aie::ShaderProgram m_dragonShader;
-	aie::ShaderProgram m_buddhaShader;
-	aie::ShaderProgram m_lucyShader;
 	aie::ShaderProgram m_soulspearShader;
 	aie::ShaderProgram m_grenadeShader;
 	aie::ShaderProgram m_phongShader;

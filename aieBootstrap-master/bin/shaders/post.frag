@@ -52,5 +52,5 @@ void main() {
     vec2 texCoord = vTexCoord / scale + texelSize * 0.5f;
     
     // sample post effect
-    FragColour = Default(texCoord);
+    FragColour = Distort(texCoord);
 }

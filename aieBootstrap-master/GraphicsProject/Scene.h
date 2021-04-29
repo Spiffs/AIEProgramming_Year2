@@ -68,10 +68,8 @@ protected:
 	std::vector<Light> m_pointLights;
 	glm::vec3 m_ambientLight;
 	std::vector<Instance*> m_instances;
-
+	 
 	glm::vec3 m_pointLightPositions[MAX_LIGHTS];
 	glm::vec3 m_pointLightColors[MAX_LIGHTS];
-
-	aie::RenderTarget* m_renderTarget;
 };
 

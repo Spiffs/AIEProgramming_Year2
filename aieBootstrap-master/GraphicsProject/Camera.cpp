@@ -7,7 +7,9 @@ Camera::Camera()
 {
 	// main camera
 	CameraPosition FlybyCamera;
-	FlybyCamera.m_position = glm::vec3(-10, 5, 0);
+	FlybyCamera.m_position = glm::vec3(10);
+	FlybyCamera.m_theta = 225;
+	FlybyCamera.m_phi = -30;
 	m_Cameras.push_back(FlybyCamera);
 
 	CameraPosition CameraView2;
@@ -16,7 +18,7 @@ Camera::Camera()
 	CameraView2.m_phi = -8;
 	m_Cameras.push_back(CameraView2);
 
-	CameraPosition CameraView3;										//BROKEN
+	CameraPosition CameraView3;										
 	CameraView3.m_position = glm::vec3(20, 5, -20);
 	CameraView3.m_theta = 135;
 	CameraView3.m_phi = -8;
@@ -28,7 +30,7 @@ Camera::Camera()
 	CameraView4.m_phi = -8;
 	m_Cameras.push_back(CameraView4);
 
-	CameraPosition CameraView5;										//BROKEN
+	CameraPosition CameraView5;										
 	CameraView5.m_position = glm::vec3(-20, 5, 20);
 	CameraView5.m_theta = 315;
 	CameraView5.m_phi = -8;
