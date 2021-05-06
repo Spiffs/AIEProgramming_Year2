@@ -613,7 +613,7 @@ ModelImporter:
     - serializedVersion: 16
       name: HumanoidCrouch
       takeName: Take 001
-      internalID: -4852662588284540465
+      internalID: 4349972237199756475
       firstFrame: 1
       lastFrame: 24
       wrapMode: 0

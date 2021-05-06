@@ -1909,7 +1909,7 @@ ModelImporter:
     - serializedVersion: 16
       name: HumanoidRun
       takeName: Take 001
-      internalID: -6774119851873688221
+      internalID: 7400000
       firstFrame: 1
       lastFrame: 24
       wrapMode: 0

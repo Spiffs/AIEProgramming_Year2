@@ -1482,7 +1482,7 @@ ModelImporter:
     - serializedVersion: 16
       name: HumanoidIdle
       takeName: _87_a_U1_M_P_idle_Neutral__Fb_p0_No_1
-      internalID: -8921741486181931930
+      internalID: -7646955507915500003
       firstFrame: 120
       lastFrame: 1100
       wrapMode: 0

@@ -1465,7 +1465,7 @@ ModelImporter:
     - serializedVersion: 16
       name: HumanoidMidAir
       takeName: Take 001
-      internalID: 1907450622312591694
+      internalID: -7372074960082124305
       firstFrame: 1
       lastFrame: 24
       wrapMode: 0
