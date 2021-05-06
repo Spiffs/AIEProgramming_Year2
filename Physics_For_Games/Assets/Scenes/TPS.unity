@@ -1484,7 +1484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 7784274913971947212}
-  OffSet: {x: 0.62, y: 1.95, z: -3.57}
+  OffSet: {x: 0.7, y: 2, z: -2.8}
   MouseSensitivity: 10
 --- !u!4 &222962955 stripped
 Transform:
@@ -2990,7 +2990,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13499437dea755843a68969a9f5870d4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 24.509
+      value: 23.46
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13499437dea755843a68969a9f5870d4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3027,6 +3027,18 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 13499437dea755843a68969a9f5870d4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 13499437dea755843a68969a9f5870d4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.6491
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 13499437dea755843a68969a9f5870d4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.6491
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 13499437dea755843a68969a9f5870d4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.6491
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 13499437dea755843a68969a9f5870d4, type: 3}
       propertyPath: m_Name
