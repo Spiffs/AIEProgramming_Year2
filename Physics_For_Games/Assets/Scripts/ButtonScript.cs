@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class ButtonScript : MonoBehaviour
 {
@@ -13,19 +14,21 @@ public class ButtonScript : MonoBehaviour
     public RawImage Fader;
 
     // camera access to enable/disable
-    public GameObject FPCamera;
+    public CinemachineVirtualCamera TPCamera;
     public GameObject CutSceneCamera;
 
     // used to freeze the player
-    public GameObject FPPlayer;
+    public GameObject TPPlayer;
 
     // Played == true once the cutscene is played (can only be played once per run time)
     private bool Played = false;
 
-    private void Start()
+    private void Start()    
     {
+        DontDestroyOnLoad(TPCamera.gameObject);
+
         // set gameobjects to active and disactive as needed
-        FPCamera.SetActive(true);
+        TPCamera.gameObject.SetActive(true);
         DisplayPressE.SetActive(false);
         CutSceneCamera.SetActive(false);
         WallInvisableCollider.SetActive(true);
@@ -39,16 +42,15 @@ public class ButtonScript : MonoBehaviour
             Collider[] hitColliders = Physics.OverlapSphere(gameObject.transform.position, 0.5f, TargetLayer);
             int i = 0;
 
-            // check to see if plaer is looking at the button
+            // check to see if player is looking at the button
             RaycastHit hit;
-            if (i < hitColliders.Length && Physics.Raycast(FPCamera.transform.position, FPCamera.transform.forward, out hit) && hit.transform.tag == "Button")
+            if (i < hitColliders.Length && Physics.Raycast(TPCamera.transform.position, TPCamera.transform.forward, out hit) && hit.transform.tag == "Button")
             {
                 DisplayPressE.SetActive(true);
                 if (Input.GetKey(KeyCode.E))
                 {
                     // disable the player
-                    FPPlayer.GetComponent<FPSMovement>().ableToMove = false;
-                    FPCamera.GetComponent<FPSController>().ableToMove = false;
+                    TPCamera.GetComponent<TPSController>().ableToMove = false;
 
                     // deavtictivate invisable wall collider
                     WallInvisableCollider.SetActive(false);
@@ -78,7 +80,7 @@ public class ButtonScript : MonoBehaviour
         yield return new WaitForSecondsRealtime(1);
 
         // swap activated camera to the cut scene camera
-        FPCamera.SetActive(false);
+        TPCamera.gameObject.SetActive(false);
         CutSceneCamera.SetActive(true);
 
         Fader.CrossFadeAlpha(0, 0.5f, true);
@@ -93,9 +95,8 @@ public class ButtonScript : MonoBehaviour
 
         // swap activated camera to first person camera
         CutSceneCamera.SetActive(false);
-        FPCamera.SetActive(true);
-        FPPlayer.GetComponent<FPSMovement>().ableToMove = true;
-        FPCamera.GetComponent<FPSController>().ableToMove = true;
+        TPCamera.gameObject.SetActive(true);
+        TPCamera.GetComponent<TPSController>().ableToMove = true;
 
         Fader.CrossFadeAlpha(0, 1, true);
         yield return new WaitForSecondsRealtime(1);
