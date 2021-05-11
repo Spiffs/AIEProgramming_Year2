@@ -8,69 +8,95 @@ public class ButtonScript : MonoBehaviour
 {
     // public variables
     public LayerMask TargetLayer;
-    public GameObject DisplayPressE;
+
+    // ui Button
+    public GameObject ButtonUp;
+    public GameObject ButtonDown;
+    private bool ButtonButtonOrSomething = false;
+    private bool ButtonPushed = false;
+
     public GameObject WreckingBall;
     public GameObject WallInvisableCollider;
     public RawImage Fader;
 
     // camera access to enable/disable
-    public CinemachineVirtualCamera TPCamera;
-    public GameObject CutSceneCamera;
+    public CinemachineFreeLook ThirdPersonCamera;
+    public CinemachineVirtualCamera CutSceneCamera;
 
-    // used to freeze the player
-    public GameObject TPPlayer;
+    private float SelectedCamera = 0;
 
     // Played == true once the cutscene is played (can only be played once per run time)
     private bool Played = false;
 
-    private void Start()    
+    private void Start()
     {
-        DontDestroyOnLoad(TPCamera.gameObject);
+        ThirdPersonCamera.m_Priority = 1;
+        CutSceneCamera.m_Priority = 0;
 
         // set gameobjects to active and disactive as needed
-        TPCamera.gameObject.SetActive(true);
-        DisplayPressE.SetActive(false);
-        CutSceneCamera.SetActive(false);
+        ButtonUp.SetActive(false);
+        ButtonDown.SetActive(false);
         WallInvisableCollider.SetActive(true);
     }
 
     void Update()
     {
+        // make sure both buttons are already disapeared 
+        ButtonUp.SetActive(false); ButtonDown.SetActive(false);
+
+        SwitchCamera();
+
         if (!Played)
         {
             // check if player is close enough to button
-            Collider[] hitColliders = Physics.OverlapSphere(gameObject.transform.position, 0.5f, TargetLayer);
+            Collider[] hitColliders = Physics.OverlapSphere(gameObject.transform.position, 1f, TargetLayer);
             int i = 0;
 
-            // check to see if player is looking at the button
-            RaycastHit hit;
-            if (i < hitColliders.Length && Physics.Raycast(TPCamera.transform.position, TPCamera.transform.forward, out hit) && hit.transform.tag == "Button")
+            if (i < hitColliders.Length)
             {
-                DisplayPressE.SetActive(true);
-                if (Input.GetKey(KeyCode.E))
+                if (ButtonPushed)
                 {
-                    // disable the player
-                    TPCamera.GetComponent<TPSController>().ableToMove = false;
+                    ButtonUp.SetActive(false);
+                    ButtonDown.SetActive(true);
+                    if (ButtonButtonOrSomething)
+                    {
+                        WallInvisableCollider.SetActive(false);
+                        Played = true;
 
-                    // deavtictivate invisable wall collider
-                    WallInvisableCollider.SetActive(false);
-                    Played = true;
+                        WreckingBall.GetComponent<Rigidbody>().isKinematic = false;
 
-                    // prepare to begin cutscene and call all functions
-                    DisplayPressE.SetActive(false);
-                    WreckingBall.GetComponent<Rigidbody>().isKinematic = false;
-                    Fader.CrossFadeAlpha(1, 0.5f, true);
-                    StartCoroutine("TriggerCutScene");
+                        Fader.CrossFadeAlpha(1, 1, true);
+                        StartCoroutine("TriggerCutScene");
+                    }
                 }
-            }
-            else
-            {
-                // does not display "Press E" unless close enough and looking at button 
-                DisplayPressE.SetActive(false);
+                else
+                {
+                    ButtonUp.SetActive(true);
+                    ButtonDown.SetActive(false);
+                }
+
+                // display the button correctly on mouse down or up
+                if (Input.GetMouseButtonUp(0))
+                    ButtonPushed = false;
+
+                else if (Input.GetMouseButtonDown(0))
+                    ButtonPushed = true;
             }
         }
-        else
-            DisplayPressE.SetActive(false);
+    }
+
+    void SwitchCamera()
+    {
+        if (SelectedCamera == 1)
+        {
+            ThirdPersonCamera.m_Priority = 2;
+            CutSceneCamera.m_Priority = 1;
+        }
+        else if (SelectedCamera == 2)
+        {
+            ThirdPersonCamera.m_Priority = 1;
+            CutSceneCamera.m_Priority = 2;
+        }
     }
 
     // could be better but coroutines are confusing :/
@@ -80,8 +106,7 @@ public class ButtonScript : MonoBehaviour
         yield return new WaitForSecondsRealtime(1);
 
         // swap activated camera to the cut scene camera
-        TPCamera.gameObject.SetActive(false);
-        CutSceneCamera.SetActive(true);
+        SelectedCamera = 2;
 
         Fader.CrossFadeAlpha(0, 0.5f, true);
         yield return new WaitForSecondsRealtime(1);
@@ -94,12 +119,15 @@ public class ButtonScript : MonoBehaviour
         yield return new WaitForSecondsRealtime(1);
 
         // swap activated camera to first person camera
-        CutSceneCamera.SetActive(false);
-        TPCamera.gameObject.SetActive(true);
-        TPCamera.GetComponent<TPSController>().ableToMove = true;
+        SelectedCamera = 1;
 
         Fader.CrossFadeAlpha(0, 1, true);
         yield return new WaitForSecondsRealtime(1);
 
+    }
+
+    public void OnButtonButton()
+    {
+        ButtonButtonOrSomething = true;
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 
 public class EndSequence : MonoBehaviour
 {
@@ -18,11 +19,11 @@ public class EndSequence : MonoBehaviour
     public GameObject PressE;
 
     // player
-    public GameObject FPPlayer;
+    public GameObject TPPlayer;
 
     // cameras
-    public GameObject FPCamera;
-    public GameObject ThrillerCamera;
+    public CinemachineFreeLook TPCamera;
+    public CinemachineVirtualCamera ThrillerCamera;
 
     // animator
     public GameObject Dancer;
@@ -54,7 +55,7 @@ public class EndSequence : MonoBehaviour
         PressE.SetActive(false);
 
         // disable secondary camera on runtime
-        ThrillerCamera.SetActive(false);
+        ThrillerCamera.m_Priority = 0;
 
         // directional light starting angle
         targetRotation = DirectionalLight.transform.rotation;
@@ -88,8 +89,7 @@ public class EndSequence : MonoBehaviour
                 PressE.SetActive(true);
 
                 // disable player movement
-                FPPlayer.GetComponent<FPSMovement>().ableToMove = false;
-                FPCamera.GetComponent<FPSController>().ableToMove = false;
+                TPPlayer.GetComponent<TPSController>().ableToMove = false;
             }
         }
         else if (!Dialogue2Complete)
@@ -107,8 +107,7 @@ public class EndSequence : MonoBehaviour
                 PressE.SetActive(true);
 
                 // disable player movement
-                FPPlayer.GetComponent<FPSMovement>().ableToMove = false;
-                FPCamera.GetComponent<FPSController>().ableToMove = false;
+                TPPlayer.GetComponent<TPSController>().ableToMove = false;
             }
         }
         else if (!Dialogue3Complete)
@@ -126,8 +125,7 @@ public class EndSequence : MonoBehaviour
                 PressE.SetActive(true);
 
                 // disable player movement
-                FPPlayer.GetComponent<FPSMovement>().ableToMove = false;
-                FPCamera.GetComponent<FPSController>().ableToMove = false;
+                TPPlayer.GetComponent<TPSController>().ableToMove = false;
             }
         }
         else if (!DanceTriggered)
@@ -150,11 +148,9 @@ public class EndSequence : MonoBehaviour
                 paused = true;
 
                 // disable player movement
-                FPPlayer.GetComponent<FPSMovement>().ableToMove = false;
-                FPCamera.GetComponent<FPSController>().ableToMove = false;
+                TPPlayer.GetComponent<TPSController>().ableToMove = false;
             }
         }
-
 
         // unpausing
         if (paused)
@@ -168,8 +164,7 @@ public class EndSequence : MonoBehaviour
                 PressE.SetActive(false);
 
                 // enable player movement
-                FPPlayer.GetComponent<FPSMovement>().ableToMove = true;
-                FPCamera.GetComponent<FPSController>().ableToMove = true;
+                TPPlayer.GetComponent<TPSController>().ableToMove = true;
             }
         }
 
@@ -182,8 +177,8 @@ public class EndSequence : MonoBehaviour
 
     void SwitchToThrillerCamera()
     {
-        FPCamera.SetActive(false);
-        ThrillerCamera.SetActive(true);
+        TPCamera.m_Priority = 0;
+        ThrillerCamera.Priority = 1;
 
         Fader.CrossFadeAlpha(0, 1, true);
 
