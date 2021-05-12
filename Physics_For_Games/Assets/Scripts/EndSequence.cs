@@ -178,7 +178,7 @@ public class EndSequence : MonoBehaviour
     void SwitchToThrillerCamera()
     {
         TPCamera.m_Priority = 0;
-        ThrillerCamera.Priority = 1;
+        ThrillerCamera.Priority = 10;
 
         Fader.CrossFadeAlpha(0, 1, true);
 
