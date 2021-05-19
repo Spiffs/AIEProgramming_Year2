@@ -30,8 +30,8 @@ public class ButtonScript : MonoBehaviour
 
     private void Start()
     {
-        ThirdPersonCamera.m_Priority = 1;
-        CutSceneCamera.m_Priority = 0;
+        ThirdPersonCamera.m_Priority = 10;
+        CutSceneCamera.m_Priority = 1;
 
         // set gameobjects to active and disactive as needed
         ButtonUp.SetActive(false);

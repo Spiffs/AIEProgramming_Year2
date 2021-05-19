@@ -167,18 +167,12 @@ public class EndSequence : MonoBehaviour
                 TPPlayer.GetComponent<TPSController>().ableToMove = true;
             }
         }
-
-        // game exit on ESC 
-        if (Input.GetKey(KeyCode.Escape))
-        {
-            Application.Quit();
-        }
     }
 
     void SwitchToThrillerCamera()
     {
         TPCamera.m_Priority = 0;
-        ThrillerCamera.Priority = 10;
+        ThrillerCamera.Priority = 10;   
 
         Fader.CrossFadeAlpha(0, 1, true);
 

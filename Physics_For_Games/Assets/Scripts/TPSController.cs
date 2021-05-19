@@ -23,6 +23,7 @@ public class TPSController : MonoBehaviour
     public Material RegularMaterial2;
     public Material GlassMaterial;
     public Material GreenPattern;
+    public Material RenderMaterial;
 
     public GameObject CharacterMesh;
 
@@ -114,6 +115,13 @@ public class TPSController : MonoBehaviour
         Material[] newmats = CharacterMesh.GetComponent<SkinnedMeshRenderer>().materials;
         newmats[0] = GreenPattern;
         newmats[1] = GreenPattern;
+        CharacterMesh.GetComponent<SkinnedMeshRenderer>().materials = newmats;
+    }
+    public void Material4()
+    {
+        Material[] newmats = CharacterMesh.GetComponent<SkinnedMeshRenderer>().materials;
+        newmats[0] = RenderMaterial;
+        newmats[1] = RenderMaterial;
         CharacterMesh.GetComponent<SkinnedMeshRenderer>().materials = newmats;
     }
 }
